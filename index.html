@@ -195,6 +195,16 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,249,245,.94);backdro
 .x{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:50%;border:none;background:#fff;color:var(--ink);font-size:1.3rem;cursor:pointer;box-shadow:var(--shadow);z-index:2}
 .note-line{font-size:.8rem;color:var(--ink-soft);text-align:center;margin-top:10px}
 .done{text-align:center;padding:34px 22px}
+/* Modal image slider */
+.ms{position:absolute;inset:0;opacity:0;transition:opacity .4s}
+.ms.on{opacity:1}
+.ms img{width:100%;height:100%;object-fit:cover}
+.msd{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
+.msd button{width:8px;height:8px;border-radius:50%;border:none;background:rgba(255,255,255,.6);cursor:pointer;padding:0;transition:.2s}
+.msd button.on{background:#fff;width:20px;border-radius:4px}
+.msarr{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.85);border:none;border-radius:50%;width:34px;height:34px;font-size:1.4rem;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.msarr.left{left:8px}
+.msarr.right{right:8px}
 .done .check{width:66px;height:66px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 16px}
 .done h3{font-size:1.25rem;margin-bottom:6px}
 .done p{color:var(--ink-soft)}
@@ -405,6 +415,8 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
     <div id="orderForm">
       <div class="modal-head" id="mHead"></div>
       <div class="modal-desc" id="mDesc"></div>
+    <div id="mImgSlider" style="display:none;position:relative;margin:14px 20px 0;border-radius:14px;overflow:hidden;aspect-ratio:1/1;background:#FBF0EE"></div>
+    <div id="mVideo" style="display:none;padding:0 20px"></div>
       <div class="modal-body">
         <div class="field">
           <label>পরিমাণ</label>
@@ -637,6 +649,30 @@ function openModal(id){
   $("#mHead").innerHTML=`${img}<div><h3>${current.name}</h3><div class="mp">${bnNum(current.price)}${cur}</div></div>`;
   const desc=(current.description||"").trim();
   if(desc){ $("#mDesc").textContent=desc; $("#mDesc").style.display="block"; } else { $("#mDesc").textContent=""; $("#mDesc").style.display="none"; }
+  // Image slider
+  const imgs=[current.image_url,current.image_url2,current.image_url3].filter(u=>u&&u.trim());
+  const sliderEl=$("#mImgSlider");
+  if(imgs.length>1){
+    sliderEl.style.display="block";
+    let si=0;
+    const showSlide=i=>{ si=i; sliderEl.querySelectorAll(".ms").forEach((s,j)=>s.classList.toggle("on",j===i)); sliderEl.querySelectorAll(".msd button").forEach((b,j)=>b.classList.toggle("on",j===i)); };
+    sliderEl.innerHTML=imgs.map((u,i)=>`<div class="ms${i===0?' on':''}"><img src="${u}" alt="product"></div>`).join("")
+      +`<div class="msd">`+imgs.map((_,i)=>`<button class="${i===0?'on':''}" onclick="(()=>{document.querySelectorAll('#mImgSlider .ms').forEach((s,j)=>s.classList.toggle('on',j===${i}));document.querySelectorAll('#mImgSlider .msd button').forEach((b,j)=>b.classList.toggle('on',j===${i}))})()"></button>`).join("")+`</div>`
+      +`<button class="msarr left" onclick="(()=>{const n=(document.querySelectorAll('#mImgSlider .ms').length+[...document.querySelectorAll('#mImgSlider .ms')].findIndex(s=>s.classList.contains('on'))-1)%document.querySelectorAll('#mImgSlider .ms').length;document.querySelectorAll('#mImgSlider .ms').forEach((s,j)=>s.classList.toggle('on',j===n));document.querySelectorAll('#mImgSlider .msd button').forEach((b,j)=>b.classList.toggle('on',j===n))})()">‹</button>`
+      +`<button class="msarr right" onclick="(()=>{const els=document.querySelectorAll('#mImgSlider .ms');const n=([...els].findIndex(s=>s.classList.contains('on'))+1)%els.length;els.forEach((s,j)=>s.classList.toggle('on',j===n));document.querySelectorAll('#mImgSlider .msd button').forEach((b,j)=>b.classList.toggle('on',j===n))})()">›</button>`;
+  } else { sliderEl.style.display="none"; }
+  // Video
+  const videoEl=$("#mVideo");
+  if(current.video_url&&current.video_url.trim()){
+    let vid=current.video_url.trim();
+    // YouTube embed URL বানাও
+    let embedUrl="";
+    const yt=vid.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if(yt) embedUrl=`https://www.youtube.com/embed/${yt[1]}`;
+    else embedUrl=vid;
+    videoEl.innerHTML=`<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border-radius:12px;margin-top:14px"></iframe>`;
+    videoEl.style.display="block";
+  } else { videoEl.innerHTML=""; videoEl.style.display="none"; }
   $("#qty").value=1; appliedCoupon=null; $("#coupon").value=""; $("#couponMsg").textContent="";
   $("#delivery").value="dhaka"; updateTotal();
   $("#cName").value=$("#cPhone").value=$("#cAddr").value=$("#cNote").value="";
