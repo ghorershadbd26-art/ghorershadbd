@@ -594,7 +594,16 @@ async function loadProducts(){
   if(!CONFIG.productsCsvUrl){ PRODUCTS=SAMPLE; return; }
   try{
     const data=await fetchCSV(CONFIG.productsCsvUrl);
-    PRODUCTS=data.map(d=>({ id:d.id,name:d.name,category:d.category||"", price:parseFloat(String(d.price).replace(/[^0-9.]/g,''))||0, old_price:parseFloat(String(d.old_price).replace(/[^0-9.]/g,''))||0, image_url:d.image_url||"",description:d.description||"",status:(d.status||"active").toLowerCase() })).filter(p=>p.name&&p.status!=="hidden");
+    PRODUCTS=data.map(d=>({
+  id:d.id,name:d.name,category:d.category||"",
+  price:parseFloat(String(d.price).replace(/[^0-9.]/g,""))||0,
+  old_price:parseFloat(String(d.old_price).replace(/[^0-9.]/g,""))||0,
+  image_url:(d.image_url||"").replace(/i\.ibb\.co\.com/g,"i.ibb.co"),
+  image_url2:(d.image_url2||"").replace(/i\.ibb\.co\.com/g,"i.ibb.co"),
+  image_url3:(d.image_url3||"").replace(/i\.ibb\.co\.com/g,"i.ibb.co"),
+  video_url:d.video_url||"",
+  description:d.description||"",status:(d.status||"active").toLowerCase()
+})).filter(p=>p.name&&p.status!=="hidden");
     if(!PRODUCTS.length) PRODUCTS=SAMPLE;
   }catch(e){ PRODUCTS=SAMPLE; }
 }
@@ -650,7 +659,7 @@ function openModal(id){
   const desc=(current.description||"").trim();
   if(desc){ $("#mDesc").textContent=desc; $("#mDesc").style.display="block"; } else { $("#mDesc").textContent=""; $("#mDesc").style.display="none"; }
   // Image slider
-  const imgs=[current.image_url,current.image_url2,current.image_url3].filter(u=>u&&u.trim());
+  const imgs=[current.image_url,current.image_url2,current.image_url3].filter(u=>u&&u.trim()).map(u=>u.replace(/i\.ibb\.co\.com/g,"i.ibb.co"));
   const sliderEl=$("#mImgSlider");
   if(imgs.length>1){
     sliderEl.style.display="block";
@@ -801,7 +810,9 @@ async function submitCartOrder(){
   document.getElementById("cartBody").innerHTML="";
   document.getElementById("cartCheckout").style.display="none";
 }
-document.getElementById("cartOverlay").onclick=e=>{if(e.target===document.getElementById("cartOverlay"))closeCart();};
+document.getElementById("cartOverlay").addEventListener("click", function(e){
+  if(e.target===this) closeCart();
+});
 
 $("#search").oninput=render;
 boot();
