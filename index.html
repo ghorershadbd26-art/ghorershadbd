@@ -280,6 +280,52 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,249,245,.94);backdro
 .review-product{display:inline-block;background:#FFF0EE;color:var(--accent-deep);font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:50px;margin-top:10px}
 @media(max-width:640px){.reviews-grid{grid-template-columns:1fr}}
 
+
+/* Toast */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:50px;font-weight:600;font-size:.92rem;opacity:0;transition:.3s;z-index:99;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Back to Top */
+#backTop{position:fixed;bottom:160px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:1.4rem;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(200,0,26,.4);z-index:49;transition:.2s}
+#backTop:hover{background:var(--accent-deep);transform:scale(1.1)}
+#backTop.show{display:flex}
+/* Sort */
+.sort-wrap{display:flex;align-items:center;gap:8px}
+.sort-wrap select{border:1.5px solid var(--line);border-radius:50px;padding:6px 14px;font-family:inherit;font-size:.85rem;background:#fff;color:var(--ink);outline:none;cursor:pointer}
+.sort-wrap select:focus{border-color:var(--accent)}
+/* Gallery Modal */
+.gal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:95;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+.gal-overlay.show{display:flex}
+.gal-main{position:relative;max-width:90vw;max-height:75vh;border-radius:16px;overflow:hidden}
+.gal-main img,.gal-main video,.gal-main iframe{max-width:90vw;max-height:75vh;border-radius:16px;display:block}
+.gal-close{position:absolute;top:14px;right:18px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:1.6rem;width:40px;height:40px;border-radius:50%;cursor:pointer;z-index:2;backdrop-filter:blur(4px)}
+.gal-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;max-width:90vw;padding-bottom:4px}
+.gal-thumb{width:60px;height:60px;border-radius:10px;object-fit:cover;cursor:pointer;opacity:.6;transition:.2s;flex-shrink:0;border:2px solid transparent}
+.gal-thumb.on{opacity:1;border-color:#fff}
+.gal-arr{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);border:none;color:#fff;font-size:1.8rem;width:44px;height:44px;border-radius:50%;cursor:pointer;backdrop-filter:blur(4px);z-index:2}
+.gal-arr.left{left:10px}
+.gal-arr.right{right:10px}
+/* Review Modal */
+.rv-overlay{position:fixed;inset:0;background:rgba(30,0,0,.6);backdrop-filter:blur(3px);z-index:93;display:none;align-items:center;justify-content:center;padding:16px}
+.rv-overlay.show{display:flex}
+.rv-modal{background:#fff;border-radius:22px;max-width:420px;width:100%;padding:24px;box-shadow:var(--shadow-lg);animation:pop .25s ease}
+.rv-modal h3{font-family:'Baloo Da 2';font-size:1.15rem;margin-bottom:16px}
+.star-pick{display:flex;gap:6px;margin-bottom:14px}
+.star-pick span{font-size:1.8rem;cursor:pointer;opacity:.4;transition:.15s;line-height:1}
+.star-pick span.on{opacity:1}
+/* Related */
+.related{padding:18px 20px;border-top:1px solid var(--line)}
+.related h4{font-family:'Baloo Da 2';margin-bottom:12px;font-size:1rem}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rel-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
+.rel-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.rel-card img,.rel-thumb-ph{width:100%;aspect-ratio:1;object-fit:cover;background:#FBF0EE;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.rel-card .rel-name{font-size:.75rem;font-weight:600;padding:6px 8px;line-height:1.3}
+.rel-card .rel-price{font-family:'Baloo Da 2';font-size:.82rem;color:var(--accent-deep);padding:0 8px 8px;font-weight:700}
+/* Footer logo */
+.foot-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.foot-logo img{height:48px;border-radius:10px}
+.foot-tagline{color:#C9AAAA;font-size:.85rem;margin-bottom:8px;font-style:italic}
+
 /* ---------- Footer ---------- */
 footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24px}
 .foot{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:26px}
@@ -385,7 +431,15 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
 <div class="wrap">
   <div class="section-h">
     <h2 id="secTitle">সকল পণ্য</h2>
-    <span id="count"></span>
+    <div class="sort-wrap">
+      <select id="sortSel" onchange="setSort(this.value)">
+        <option value="default">সাজানো: ডিফল্ট</option>
+        <option value="low">দাম: কম থেকে বেশি</option>
+        <option value="high">দাম: বেশি থেকে কম</option>
+        <option value="name">নাম: A-Z</option>
+      </select>
+      <span id="count"></span>
+    </div>
   </div>
   <div id="grid" class="grid"></div>
   <div id="status" class="loading">লোড হচ্ছে...</div>
@@ -394,7 +448,11 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
 <footer>
   <div class="foot">
     <div>
-      <h4 id="fName">ঘরের স্বাদ বিডি</h4>
+      <div class="foot-logo">
+        <img id="fLogo" alt="logo" style="display:none" />
+        <h4 id="fName">ঘরের স্বাদ বিডি</h4>
+      </div>
+      <p class="foot-tagline" id="fTagline">প্রতিটি পণ্য ঘরের স্বাদ, প্রতিটি অর্ডার ভালোবাসার ছোঁয়া।</p>
       <p id="fAddr"></p>
       <p id="fPhone"></p>
     </div>
@@ -460,6 +518,7 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
       <div class="field"><label>নোট (ঐচ্ছিক)</label><input id="ccNote" placeholder="আর কিছু জানাতে চাইলে" /></div>
       <button class="submit" id="cartSubmitBtn" onclick="submitCartOrder()">অর্ডার নিশ্চিত করুন</button>
       <p class="note-line">ক্যাশ অন ডেলিভারি। আমরা শীঘ্রই যোগাযোগ করব।</p>
+      <button class="add-btn" style="margin-top:10px" onclick="document.getElementById('reviewOverlay').classList.add('show');document.getElementById('reviewDone').style.display='none';document.getElementById('rvSubmit').style.display='flex'">⭐ রিভিউ দিন</button>
       <div id="cartDone" class="done" style="display:none">
         <div class="check">✓</div>
         <h3>অর্ডার সম্পন্ন!</h3>
@@ -474,7 +533,7 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
   <div class="modal" style="position:relative">
     <button class="x" id="closeX">×</button>
     <div id="orderForm">
-      <div class="modal-head" id="mHead"></div>
+      <div class="modal-head" id="mHead" style="cursor:pointer" onclick="openGallery()" title="ছবি বড় করুন"></div>
       <div class="modal-desc" id="mDesc"></div>
     <div id="mImgSlider" style="display:none;position:relative;margin:14px 20px 0;border-radius:14px;overflow:hidden;aspect-ratio:1/1;background:#FBF0EE"></div>
     <div id="mVideo" style="display:none;padding:0 20px"></div>
@@ -514,7 +573,12 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
         </div>
         <button class="submit" id="submitBtn">অর্ডার নিশ্চিত করুন</button>
         <p class="note-line">ক্যাশ অন ডেলিভারি। আমরা শীঘ্রই যোগাযোগ করব।</p>
+      <button class="add-btn" style="margin-top:10px" onclick="document.getElementById('reviewOverlay').classList.add('show');document.getElementById('reviewDone').style.display='none';document.getElementById('rvSubmit').style.display='flex'">⭐ রিভিউ দিন</button>
       </div>
+    </div>
+    <div class="related" id="mRelated" style="display:none">
+      <h4>সম্পর্কিত পণ্য</h4>
+      <div class="related-grid" id="relatedGrid"></div>
     </div>
     <div id="doneView" class="done" style="display:none">
       <div class="check">✓</div>
@@ -578,6 +642,8 @@ function applyConfig(){
   $("#heroTitle").textContent = S.hero_title;
   $("#heroSub").textContent = S.hero_sub;
   $("#fName").textContent = S.store_name;
+  if(S.logo_url){ const fl=document.getElementById("fLogo"); if(fl){fl.src=S.logo_url;fl.style.display="block";} }
+  if(S.tagline){ const ft=document.getElementById("fTagline"); if(ft) ft.textContent=S.tagline; }
   $("#fAddr").textContent = S.address;
   $("#fPhone").textContent = "📞 " + S.phone;
   const wa = "https://wa.me/" + S.whatsapp;
@@ -697,6 +763,318 @@ async function loadReviews(){
     document.getElementById("reviewsSection").style.display="block";
   }catch(e){}
 }
+let sortMode = 'default';
+
+/* ============ EXTRACTED FROM ILM TOY ============ */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.innerHTML = '<span class="tk">✓</span>' + msg;
+  t.classList.add('show');
+  clearTimeout(__toastT);
+  __toastT = setTimeout(()=>t.classList.remove('show'), 1600);
+}
+
+function setSort(v){ sortMode = (v==='low'||v==='high') ? v : 'default'; render(); }
+
+function typeAnnounce(text){
+  const el = document.getElementById("announce");
+  if(!el) return;
+  clearTimeout(__annTimer);
+  const msgs = (text||"").toString().split("|").map(s=>s.trim()).filter(Boolean);
+  if(!msgs.length){ el.textContent=""; el.style.display="none"; return; }
+  el.style.display="";
+  const TYPE=55, ERASE=26, HOLD=2200, PAUSE=400;
+  let mi=0, ci=0, phase="type";
+  const curSpan = '<span class="ann-cursor"></span>';
+  function frame(){
+    const msg = msgs[mi];
+    if(phase==="type"){
+      ci++;
+      el.innerHTML = esc(msg.slice(0,ci)) + curSpan;
+      if(ci>=msg.length){ phase="erase"; __annTimer=setTimeout(frame, HOLD); }
+      else __annTimer=setTimeout(frame, TYPE);
+    } else {
+      ci--;
+      el.innerHTML = esc(msg.slice(0,Math.max(0,ci))) + curSpan;
+      if(ci<=0){ mi=(mi+1)%msgs.length; phase="type"; __annTimer=setTimeout(frame, PAUSE); }
+      else __annTimer=setTimeout(frame, ERASE);
+    }
+  }
+  frame();
+}
+
+function starHTML(n){
+  let s="";
+  for(let i=1;i<=5;i++){ s += `<span class="${i<=n?'':'off'}">★</span>`; }
+  return s;
+}
+
+function ytThumb(url){
+  const id = ytId(url);
+  return id ? `<img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy">` : `<div class="gal-thumb-vph">🎬</div>`;
+}
+
+function ytId(url){
+  const m = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  return m ? m[1] : "";
+}
+
+function galMediaHTML(it){
+  if(it.type==='video'){
+    const yt = ytId(it.url);
+    if(yt) return `<iframe class="gal-video" src="https://www.youtube.com/embed/${yt}?rel=0&modestbranding=1&playsinline=1" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    return `<video class="gal-video" src="${it.url}" controls playsinline preload="metadata"></video>`;
+  }
+  return `<img id="galImg" src="${it.url}" alt="${escAttr(current?current.name:'')}">`;
+}
+
+function showGalImg(i){
+  if(!galItems.length) return;
+  galIdx = ((i % galItems.length) + galItems.length) % galItems.length;
+  renderGalMain();
+  document.querySelectorAll('.gal-thumb').forEach((t,j)=>t.classList.toggle('on', j===galIdx));
+}
+
+function renderGalMain(){
+  const main = document.getElementById('galMain');
+  if(!main || !galItems.length) return;
+  const multi = galItems.length>1;
+  const nav = multi
+    ? `<button type="button" class="gal-nav prev" onclick="showGalImg(galIdx-1)">‹</button><button type="button" class="gal-nav next" onclick="showGalImg(galIdx+1)">›</button>`
+    : "";
+  const dots = multi
+    ? `<div class="gal-dots">${galItems.map((_,i)=>`<button type="button" class="${i===galIdx?'on':''}" onclick="showGalImg(${i})"></button>`).join("")}</div>`
+    : "";
+  main.innerHTML = galMediaHTML(galItems[galIdx]) + nav + dots;
+}
+
+function renderRelated(){
+  const wrap = $("#mRelated"); if(!wrap || !current){ if(wrap){wrap.style.display="none";} return; }
+  let rel = PRODUCTS.filter(p=>String(p.id)!==String(current.id) && !p.soldout && prodCats(p).some(c=>prodCats(current).includes(c)));
+  if(rel.length < 2){
+    const more = PRODUCTS.filter(p=>String(p.id)!==String(current.id) && !p.soldout && !rel.some(r=>String(r.id)===String(p.id)));
+    rel = rel.concat(more);
+  }
+  rel = rel.slice(0,4);
+  if(!rel.length){ wrap.style.display="none"; wrap.innerHTML=""; return; }
+  wrap.style.display="block";
+  wrap.innerHTML = `<div class="rel-title">${t('related_title')}</div><div class="rel-grid">` +
+    rel.map(p=>{
+      const img = p.image_url
+        ? `<img src="${p.image_url}" alt="${escAttr(p.name)}" loading="lazy">`
+        : `<div class="rel-ph">${esc(p.name[0]||'?')}</div>`;
+      return `<button class="rel-card" type="button" data-rel="${p.id}">
+        <div class="rel-thumb">${img}</div>
+        <div class="rel-name">${esc(p.name)}</div>
+        <div class="rel-price">${bnNum(p.price)}${cur}</div>
+      </button>`;
+    }).join("") + `</div>`;
+  wrap.querySelectorAll('[data-rel]').forEach(b=>b.onclick=()=>openModal(b.dataset.rel));
+}
+
+function initReviewModal(){
+  const ov = $("#reviewOverlay"), openBtn = $("#openReviewBtn");
+  if(!ov || !openBtn) return;
+  const stars = $("#starPick").querySelectorAll('span');
+  const paint = n => stars.forEach(s=>s.classList.toggle('on', parseInt(s.dataset.v)<=n));
+  stars.forEach(s=>{
+    s.onmouseover = ()=>paint(parseInt(s.dataset.v));
+    s.onclick = ()=>{ rvRating = parseInt(s.dataset.v); paint(rvRating); };
+  });
+  $("#starPick").onmouseleave = ()=>paint(rvRating);
+  const close = ()=>ov.classList.remove("show");
+  openBtn.onclick = ()=>{
+    rvRating=0; paint(0);
+    $("#rvName").value=""; $("#rvText").value="";
+    $("#reviewForm").style.display="block"; $("#reviewDone").style.display="none";
+    $("#rvSubmit").disabled=false;
+    ov.classList.add("show");
+  };
+  $("#reviewCloseX").onclick = close;
+  ov.onclick = e=>{ if(e.target===ov) close(); };
+  $("#rvSubmit").onclick = async ()=>{
+    const name=$("#rvName").value.trim(), text=$("#rvText").value.trim();
+    if(!name || !rvRating || !text){ alert(t('review_fill')); return; }
+    $("#rvSubmit").disabled=true;
+    if(CONFIG.reviewEndpoint){
+      try{
+        const fd=new URLSearchParams({ time:new Date().toLocaleString('en-GB'), name, rating:rvRating, review:text, status:"pending" });
+        fetch(CONFIG.reviewEndpoint,{method:"POST",mode:"no-cors",body:fd});
+      }catch(e){}
+    }
+    $("#reviewForm").style.display="none";
+    $("#reviewDone").style.display="block";
+  };
+}
+
+function setupReviewTyping(){
+  if(__rvObserver){ __rvObserver.disconnect(); }
+  stopReviewTyping();
+  const els = Array.from(document.querySelectorAll('.rv-text[data-fulltext]'));
+  if(!els.length) return;
+  els.forEach(el=>{ el.textContent=""; el.classList.add('rv-pending'); el.dataset.typed=""; });
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce || !('IntersectionObserver' in window)){
+    els.forEach(el=>{ el.classList.remove('rv-pending'); el.textContent = el.getAttribute('data-fulltext')||""; });
+    return;
+  }
+  let batch = 0, lastTime = 0;
+  __rvObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      __rvObserver.unobserve(el);
+      if(el.dataset.typed) return;
+      el.dataset.typed = "1";
+      const now = Date.now();
+      batch = (now - lastTime < 450) ? batch+1 : 0;
+      lastTime = now;
+      setTimeout(()=>typeReviewEl(el), batch*180);
+    });
+  }, {threshold:0.25});
+  els.forEach(el=>__rvObserver.observe(el));
+}
+
+function stopReviewTyping(){
+  __rvActive.forEach(el=>{ if(el.__rvT) clearTimeout(el.__rvT); });
+  __rvActive = new Set();
+}
+
+function typeReviewEl(el){
+  const full = el.getAttribute('data-fulltext') || "";
+  el.classList.remove('rv-pending');
+  if(!full) return;
+  __rvActive.add(el);
+  const TYPE = full.length > 140 ? 12 : 18, ERASE = 9, HOLD = 2600, PAUSE = 650;
+  let i = 0, phase = "type";
+  const cur = '<span class="ann-cursor rv-cur"></span>';
+  function frame(){
+    if(phase==="type"){
+      i++;
+      el.innerHTML = esc(full.slice(0,i)) + cur;
+      if(i>=full.length){ phase="erase"; el.__rvT=setTimeout(frame, HOLD); }
+      else el.__rvT=setTimeout(frame, TYPE);
+    } else {
+      i--;
+      el.innerHTML = esc(full.slice(0,Math.max(0,i))) + cur;
+      if(i<=0){ phase="type"; el.__rvT=setTimeout(frame, PAUSE); }
+      else el.__rvT=setTimeout(frame, ERASE);
+    }
+  }
+  frame();
+}
+
+function renderReviews(){
+  const sec = $("#reviewsSection"), grid = $("#reviewGrid");
+  if(!sec) return;
+  // রিভিউ লিখুন বাটন — endpoint থাকলে দেখাও
+  const addBtn = $("#openReviewBtn");
+  if(addBtn) addBtn.style.display = CONFIG.reviewEndpoint ? "" : "none";
+  if(!REVIEWS.length && !CONFIG.reviewEndpoint){ sec.style.display="none"; return; }
+  sec.style.display = "";
+  grid.innerHTML = REVIEWS.map(r=>{
+    const initial = (r.name[0]||"★").toUpperCase();
+    const ava = r.photo ? `<img src="${r.photo}" alt="${r.name}">` : initial;
+    let media = "";
+    const yt = ytId(r.video);
+    if(yt){
+      media = `<div class="rv-media"><iframe src="https://www.youtube.com/embed/${yt}" allowfullscreen loading="lazy"></iframe></div>`;
+    } else if(r.video){
+      media = `<a class="rv-watch" href="${r.video}" target="_blank" rel="noopener">${t('watch_video')}</a>`;
+    }
+    return `<div class="rv-card">
+      <div class="rv-top">
+        <div class="rv-ava">${ava}</div>
+        <div><div class="rv-name">${r.name||"Customer"}</div><div class="rv-stars">${starHTML(r.rating)}</div></div>
+      </div>
+      ${r.review?`<div class="rv-text" data-fulltext="${escAttr(r.review)}"></div>`:""}
+      ${media}
+    </div>`;
+  }).join("");
+  setupReviewTyping();
+}
+
+
+function openGallery(){
+  if(!current) return;
+  const imgs = [current.image_url, current.image_url2, current.image_url3].filter(u=>u&&u.trim()).map(u=>u.replace(/i\.ibb\.co\.com/g,"i.ibb.co"));
+  const vid = current.video_url||"";
+  if(!imgs.length && !vid) return;
+  const overlay = document.getElementById('galOverlay');
+  const main = document.getElementById('galMain');
+  const thumbs = document.getElementById('galThumbs');
+  let curIdx = 0;
+  const allMedia = [...imgs.map(u=>({type:'img',url:u})), ...(vid?[{type:'vid',url:vid}]:[])];
+  const showMedia = (i)=>{
+    curIdx = i;
+    const m = allMedia[i];
+    if(m.type==='img') main.innerHTML=`<img src="${m.url}" alt=""><button class="gal-arr left" onclick="showMedia((${i}-1+${allMedia.length})%${allMedia.length})">‹</button><button class="gal-arr right" onclick="showMedia((${i}+1)%${allMedia.length})">›</button>`;
+    else {
+      const eid = m.url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      const eurl = eid ? "https://www.youtube.com/embed/"+eid[1] : m.url;
+      main.innerHTML=`<iframe src="${eurl}" frameborder="0" allowfullscreen style="width:min(560px,90vw);aspect-ratio:16/9;border-radius:16px"></iframe>`;
+    }
+    thumbs.querySelectorAll('.gal-thumb').forEach((t,j)=>t.classList.toggle('on',j===i));
+  };
+  thumbs.innerHTML = allMedia.map((m,i)=>{
+    if(m.type==='img') return `<img class="gal-thumb${i===0?' on':''}" src="${m.url}" onclick="showMedia(${i})">`;
+    return `<div class="gal-thumb${i===0?' on':''}" onclick="showMedia(${i})" style="background:#000;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;border-radius:10px">▶</div>`;
+  }).join('');
+  showMedia(0);
+  overlay.classList.add('show');
+}
+document.getElementById('galOverlay').onclick=e=>{if(e.target===document.getElementById('galOverlay'))document.getElementById('galOverlay').classList.remove('show');};
+
+function submitReview(){
+  const name = document.getElementById('rvName').value.trim();
+  const text = document.getElementById('rvText').value.trim();
+  const stars = document.querySelectorAll('#starPick span.on').length || 5;
+  if(!name||!text){alert('নাম ও মতামত দিন।');return;}
+  document.getElementById('rvSubmit').disabled=true;
+  if(CONFIG.orderEndpoint){
+    try{
+      fetch(CONFIG.orderEndpoint,{method:'POST',mode:'no-cors',body:new URLSearchParams({type:'review',name,rating:stars,text,product:current?current.name:'',time:new Date().toLocaleString('en-GB')})});
+    }catch(e){}
+  }
+  document.getElementById('rvSubmit').style.display='none';
+  document.getElementById('reviewDone').style.display='block';
+}
+
+// Star picker
+document.getElementById('starPick').querySelectorAll('span').forEach((s,i,arr)=>{
+  s.onmouseover=()=>arr.forEach((x,j)=>x.classList.toggle('on',j<=i));
+  s.onclick=()=>arr.forEach((x,j)=>x.classList.toggle('on',j<=i));
+  s.onmouseout=()=>{
+    const picked=[...arr].filter(x=>x.dataset.picked).length;
+    if(!picked) arr.forEach(x=>x.classList.remove('on'));
+  };
+  s.onclick=()=>{arr.forEach((x,j)=>{x.classList.toggle('on',j<=i);x.dataset.picked=j<=i?'1':'';});};
+});
+
+// Back to top
+window.addEventListener('scroll',()=>{
+  const btn=document.getElementById('backTop');
+  if(window.scrollY>400) btn.classList.add('show');
+  else btn.classList.remove('show');
+});
+
+function showRelated(current){
+  const related = PRODUCTS.filter(p=>p.id!==current.id&&p.category===current.category&&p.status!=='soldout').slice(0,3);
+  const el=document.getElementById('mRelated');
+  const grid=document.getElementById('relatedGrid');
+  if(!related.length){el.style.display='none';return;}
+  el.style.display='block';
+  grid.innerHTML=related.map(p=>{
+    const img=p.image_url?`<img src="${p.image_url.replace(/i\.ibb\.co\.com/g,'i.ibb.co')}" alt="${p.name}">`:`<div class="rel-thumb-ph">🍱</div>`;
+    return `<div class="rel-card" onclick="closeModal();setTimeout(()=>openModal('${p.id}'),100)">
+      ${img}
+      <div class="rel-name">${p.name}</div>
+      <div class="rel-price">${bnNum(p.price)}${cur}</div>
+    </div>`;
+  }).join('');
+}
+
 async function boot(){
   await Promise.all([loadSettings(),loadCoupons(),loadProducts(),loadReviews()]);
   cur=S.currency||"৳"; applyConfig(); buildCats(); render();
@@ -713,6 +1091,9 @@ function render(){
   const q=$("#search").value.trim().toLowerCase();
   let list=PRODUCTS.filter(p=>activeCat==="all"||p.category===activeCat);
   if(q) list=list.filter(p=>p.name.toLowerCase().includes(q));
+  if(sortMode==='low') list=[...list].sort((a,b)=>a.price-b.price);
+  else if(sortMode==='high') list=[...list].sort((a,b)=>b.price-a.price);
+  else if(sortMode==='name') list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
   $("#status").style.display="none";
   $("#count").textContent=bnNum(list.length)+" টি পণ্য";
   if(!list.length){ $("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1">কোনো পণ্য পাওয়া যায়নি।</div>`; return; }
@@ -727,9 +1108,9 @@ function render(){
         <div class="title">${p.name}</div>
         <div class="price"><span class="now">${bnNum(p.price)}${cur}</span>${sale?`<span class="was">${bnNum(p.old_price)}${cur}</span>`:""}</div>
         <div style="margin-top:12px">
-          \${p.status==='soldout'
-            ? '<button class="order-btn" style="background:#ccc;cursor:not-allowed;width:100%" disabled>স্টক শেষ</button>'
-            : '<button class="order-btn" style="width:100%" data-cart="'+p.id+'"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" style="margin-right:6px;vertical-align:middle"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>কার্টে যোগ করুন</button>'
+          ${p.status==='soldout'
+            ? `<button class="order-btn" style="background:#ccc;cursor:not-allowed;width:100%" disabled>স্টক শেষ</button>`
+            : `<button class="order-btn" style="width:100%" data-cart="${p.id}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" style="margin-right:6px;vertical-align:middle"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>কার্টে যোগ করুন</button>`
           }
         </div>
       </div>
@@ -770,7 +1151,7 @@ function openModal(id){
     videoEl.innerHTML=`<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border-radius:12px;margin-top:14px"></iframe>`;
     videoEl.style.display="block";
   } else { videoEl.innerHTML=""; videoEl.style.display="none"; }
-  $("#qty").value=1; appliedCoupon=null; $("#coupon").value=""; $("#couponMsg").textContent="";
+  $("#qty").value=1; appliedCoupon=null; $("#coupon").value=""; $("#couponMsg").textContent=""; showRelated(current);
   $("#delivery").value="dhaka"; updateTotal();
   $("#cName").value=$("#cPhone").value=$("#cAddr").value=$("#cNote").value="";
   $("#orderForm").style.display="block"; $("#doneView").style.display="none";
@@ -833,7 +1214,7 @@ function addToCart(id){
   const p=PRODUCTS.find(x=>String(x.id)===String(id)); if(!p) return;
   const ex=CART.find(x=>x.id===p.id);
   if(ex){ ex.qty++; } else { CART.push({...p,qty:1}); }
-  updateCartUI();
+  updateCartUI(); showToast("✅ কার্টে যোগ হয়েছে!");
   ["cartBadge","cartFabBadge"].forEach(bid=>{ const el=document.getElementById(bid); if(el){el.style.transform="scale(1.5)";setTimeout(()=>el.style.transform="",250);} });
 }
 function removeFromCart(id){ CART=CART.filter(x=>x.id!==id); cartCoupon=null; updateCartUI(); renderCartBody(); updateCartTotal(); }
@@ -915,5 +1296,38 @@ document.getElementById("cartOverlay").addEventListener("click", function(e){
 $("#search").oninput=render;
 boot();
 </script>
+
+<div id="toast"></div>
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- Gallery Modal -->
+<div class="gal-overlay" id="galOverlay">
+  <button class="gal-close" onclick="document.getElementById('galOverlay').classList.remove('show')">×</button>
+  <div class="gal-main" id="galMain"></div>
+  <div class="gal-thumbs" id="galThumbs"></div>
+</div>
+
+<!-- Review Submit Modal -->
+<div class="rv-overlay" id="reviewOverlay">
+  <div class="rv-modal">
+    <h3>⭐ রিভিউ দিন</h3>
+    <div class="field"><label>আপনার নাম *</label><input id="rvName" placeholder="নাম লিখুন" /></div>
+    <div class="star-pick" id="starPick">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span>
+      <span data-v="4">★</span><span data-v="5">★</span>
+    </div>
+    <div class="field"><label>আপনার মতামত *</label><textarea id="rvText" rows="3" placeholder="পণ্যটি কেমন লাগলো?"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:6px">
+      <button class="submit" id="rvSubmit" onclick="submitReview()">রিভিউ জমা দিন</button>
+      <button class="add-btn" style="margin:0;flex:0 0 auto;padding:0 16px" onclick="document.getElementById('reviewOverlay').classList.remove('show')">বাতিল</button>
+    </div>
+    <div id="reviewDone" class="done" style="display:none">
+      <div class="check">✓</div>
+      <h3>ধন্যবাদ!</h3>
+      <p>আপনার রিভিউ জমা হয়েছে।</p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
