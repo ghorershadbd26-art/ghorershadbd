@@ -377,6 +377,8 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
       <input id="search" type="text" placeholder="খাবার খুঁজুন..." />
     </div>
     <a class="callbtn" id="callBtn" href="#"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span id="callNum">Call Now</span></a>
+    <button class="track-btn" onclick="document.getElementById('trackOverlay').classList.add('show')">📦 অর্ডার ট্র্যাক</button>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()" title="ভাষা পরিবর্তন">EN | বাংলা</button>
     <button class="cart-hbtn" id="cartHBtn" onclick="openCart()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       Cart
@@ -518,7 +520,7 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
       <div class="field"><label>নোট (ঐচ্ছিক)</label><input id="ccNote" placeholder="আর কিছু জানাতে চাইলে" /></div>
       <button class="submit" id="cartSubmitBtn" onclick="submitCartOrder()">অর্ডার নিশ্চিত করুন</button>
       <p class="note-line">ক্যাশ অন ডেলিভারি। আমরা শীঘ্রই যোগাযোগ করব।</p>
-      <button class="add-btn" style="margin-top:10px" onclick="document.getElementById('reviewOverlay').classList.add('show');document.getElementById('reviewDone').style.display='none';document.getElementById('rvSubmit').style.display='flex'">⭐ রিভিউ দিন</button>
+
       <div id="cartDone" class="done" style="display:none">
         <div class="check">✓</div>
         <h3>অর্ডার সম্পন্ন!</h3>
@@ -573,7 +575,7 @@ footer{background:var(--ink);color:#F5E8E0;margin-top:30px;padding:38px 18px 24p
         </div>
         <button class="submit" id="submitBtn">অর্ডার নিশ্চিত করুন</button>
         <p class="note-line">ক্যাশ অন ডেলিভারি। আমরা শীঘ্রই যোগাযোগ করব।</p>
-      <button class="add-btn" style="margin-top:10px" onclick="document.getElementById('reviewOverlay').classList.add('show');document.getElementById('reviewDone').style.display='none';document.getElementById('rvSubmit').style.display='flex'">⭐ রিভিউ দিন</button>
+
       </div>
     </div>
     <div class="related" id="mRelated" style="display:none">
@@ -598,6 +600,7 @@ const CONFIG = {
   couponsCsvUrl  : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1396735338&single=true&output=csv",
   reviewsCsvUrl  : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1763756933&single=true&output=csv",
   orderEndpoint  : "https://script.google.com/macros/s/AKfycbxLSZX3Wnk-ruAS-LxySYTc2aVtLB3CimiI1ZvAUR4YieOIe9LAc4Yuf00QgtfOdMP5hA/exec",
+  ordersCsvUrl   : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1760562102&single=true&output=csv",
 };
 
 const DEFAULTS = {
@@ -633,7 +636,7 @@ let cur = DEFAULTS.currency;
 const bnNum = n => Number(n).toLocaleString('en-US');
 
 function applyConfig(){
-  $("#announce").textContent = S.announce;
+  // announce typing এ হবে, static না
   if(S.logo_url){ $("#logoImg").src=S.logo_url; $("#logoImg").style.display="block"; $("#logoEmoji").style.display="none"; }
   $("#logoName").textContent = S.store_name;
   document.title = S.store_name;
@@ -1076,9 +1079,59 @@ function showRelated(current){
   }).join('');
 }
 
+
+/* ---- Track Order ---- */
+async function trackOrder(){
+  const phone = document.getElementById('trackPhone').value.trim();
+  if(!phone){ alert('মোবাইল নম্বর দিন।'); return; }
+  const result = document.getElementById('trackResult');
+  result.style.display='block';
+  result.innerHTML='<p style="text-align:center;color:var(--ink-soft)">খোঁজা হচ্ছে...</p>';
+  try{
+    // Orders sheet থেকে CSV পড়ি
+    const ordersUrl = CONFIG.productsCsvUrl.replace('gid=0','gid='+CONFIG.ordersGid).replace('sheet=Products','sheet=Orders');
+    const res = await fetch(CONFIG.ordersCsvUrl||ordersUrl);
+    const text = await res.text();
+    const rows = rowsToObjects(parseCSV(text));
+    const orders = rows.filter(r=>r.phone&&r.phone.replace(/\D/g,'').includes(phone.replace(/\D/g,'')));
+    if(!orders.length){
+      result.innerHTML='<p style="text-align:center;color:var(--accent-deep)">❌ এই নম্বরে কোনো অর্ডার পাওয়া যায়নি।</p>';
+      return;
+    }
+    result.innerHTML = orders.slice(-3).reverse().map(o=>`
+      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)">
+        <div class="tr-row"><span class="tr-label">পণ্য</span><span class="tr-val" style="max-width:180px;text-align:right;font-size:.82rem">${o.product||'-'}</span></div>
+        <div class="tr-row"><span class="tr-label">মোট</span><span class="tr-val">${o.total||'-'}৳</span></div>
+        <div class="tr-row"><span class="tr-label">এলাকা</span><span class="tr-val">${o.delivery_area||'-'}</span></div>
+        <div class="tr-row"><span class="tr-label">সময়</span><span class="tr-val" style="font-size:.8rem">${o.time||'-'}</span></div>
+      </div>`).join('');
+  }catch(e){
+    result.innerHTML='<p style="text-align:center;color:var(--accent-deep)">⚠️ তথ্য লোড হয়নি। আবার চেষ্টা করুন।</p>';
+  }
+}
+document.getElementById('trackOverlay').onclick=e=>{if(e.target===document.getElementById('trackOverlay'))document.getElementById('trackOverlay').classList.remove('show');};
+
+/* ---- Language Switcher ---- */
+let currentLang = 'bn';
+const LANG = {
+  bn: { search:'খাবার খুঁজুন...', cart:'Cart', callnow:'Call Now', allProducts:'সকল পণ্য', addCart:'কার্টে যোগ করুন', soldout:'স্টক শেষ', orderBtn:'অর্ডার নিশ্চিত করুন', track:'অর্ডার ট্র্যাক', name:'আপনার নাম *', phone:'মোবাইল নম্বর *', address:'পূর্ণ ঠিকানা *', note:'নোট (ঐচ্ছিক)', delivery:'ডেলিভারি এলাকা', coupon:'কুপন কোড (থাকলে)', inside:'ঢাকার ভিতরে', outside:'ঢাকার বাইরে' },
+  en: { search:'Search food...', cart:'Cart', callnow:'Call Now', allProducts:'All Products', addCart:'Add to Cart', soldout:'Sold Out', orderBtn:'Confirm Order', track:'Track Order', name:'Your Name *', phone:'Mobile Number *', address:'Full Address *', note:'Note (optional)', delivery:'Delivery Area', coupon:'Coupon Code (if any)', inside:'Inside Dhaka', outside:'Outside Dhaka' }
+};
+function toggleLang(){
+  currentLang = currentLang==='bn'?'en':'bn';
+  const L = LANG[currentLang];
+  document.getElementById('langBtn').textContent = currentLang==='bn'?'EN | বাংলা':'বাংলা | EN';
+  const searchEl = document.getElementById('search');
+  if(searchEl) searchEl.placeholder = L.search;
+  document.getElementById('secTitle').textContent = L.allProducts;
+  render();
+}
+
 async function boot(){
   await Promise.all([loadSettings(),loadCoupons(),loadProducts(),loadReviews()]);
   cur=S.currency||"৳"; applyConfig(); buildCats(); render();
+  // Typing animation
+  if(S.announce && typeof typeAnnounce === 'function') typeAnnounce(S.announce);
 }
 
 function buildCats(){
@@ -1111,7 +1164,7 @@ function render(){
         <div style="margin-top:12px">
           ${p.status==='soldout'
             ? `<button class="order-btn" style="background:#ccc;cursor:not-allowed;width:100%" disabled>স্টক শেষ</button>`
-            : `<button class="order-btn" style="width:100%" data-cart="${p.id}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" style="margin-right:6px;vertical-align:middle"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>কার্টে যোগ করুন</button>`
+            : `<button class="order-btn" style="width:100%" data-cart="${p.id}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" style="margin-right:6px;vertical-align:middle"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>${(typeof currentLang!=="undefined"&&currentLang==="en")?"Add to Cart":"কার্টে যোগ করুন"}</button>`
           }
         </div>
       </div>
@@ -1330,5 +1383,20 @@ boot();
   </div>
 </div>
 
+
+<!-- Track Order Modal -->
+<div class="track-overlay" id="trackOverlay">
+  <div class="track-modal" style="position:relative">
+    <button class="x" style="position:absolute;top:14px;right:16px;box-shadow:none;background:#FBF0EE" onclick="document.getElementById('trackOverlay').classList.remove('show')">×</button>
+    <h3>📦 অর্ডার ট্র্যাক করুন</h3>
+    <div class="field">
+      <label>আপনার মোবাইল নম্বর *</label>
+      <input id="trackPhone" type="tel" placeholder="01XXXXXXXXX" />
+    </div>
+    <button class="submit" onclick="trackOrder()" style="margin-top:8px">অর্ডার খুঁজুন</button>
+    <div class="track-result" id="trackResult"></div>
+    <p class="note-line" style="margin-top:12px">আপনার দেওয়া মোবাইল নম্বর দিয়ে অর্ডার খোঁজা হবে।</p>
+  </div>
+</div>
 </body>
 </html>
