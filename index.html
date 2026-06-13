@@ -1027,8 +1027,7 @@ function openGallery(){
   showMedia(0);
   overlay.classList.add('show');
 }
-const _galOv=document.getElementById('galOverlay');
-if(_galOv) _galOv.onclick=e=>{if(e.target===_galOv)_galOv.classList.remove('show');};
+document.addEventListener('DOMContentLoaded',()=>{ const _go=document.getElementById('galOverlay'); if(_go) _go.onclick=e=>{if(e.target===_go)_go.classList.remove('show');}; });
 
 function submitReview(){
   const name = document.getElementById('rvName').value.trim();
@@ -1109,7 +1108,7 @@ async function trackOrder(){
     result.innerHTML='<p style="text-align:center;color:var(--accent-deep)">⚠️ তথ্য লোড হয়নি। আবার চেষ্টা করুন।</p>';
   }
 }
-document.getElementById('trackOverlay').onclick=e=>{if(e.target===document.getElementById('trackOverlay'))document.getElementById('trackOverlay').classList.remove('show');};
+document.addEventListener('DOMContentLoaded',()=>{ const _to=document.getElementById('trackOverlay'); if(_to) _to.onclick=e=>{if(e.target===_to)_to.classList.remove('show');}; });
 
 /* ---- Language Switcher ---- */
 let currentLang = 'bn';
