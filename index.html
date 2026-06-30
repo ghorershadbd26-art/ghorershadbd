@@ -98,7 +98,7 @@ img{max-width:100%;display:block}
 header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar{max-width:1180px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:16px}
 .logo{font-family:'Baloo Da 2',cursive;font-weight:800;font-size:1.55rem;color:var(--accent-deep);display:flex;align-items:center;gap:8px;white-space:nowrap}
-.logo img{height:80px;width:auto;display:block}
+.logo img{height:84px;width:auto;max-width:240px;object-fit:contain;display:block}
 .logo span{font-size:1.7rem}
 /* লোগো টাইপিং — পাশের জিনিস যেন না নড়ে, পুরো নামের জায়গা আগেই রিজার্ভ */
 .logo-name-wrap{position:relative;display:inline-block;white-space:nowrap;padding-right:6px}
@@ -458,10 +458,41 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 .fab:hover{transform:scale(1.08)}
 .fab svg{width:30px;height:30px;fill:#fff}
 
+/* ---------- ভাসমান "এখনি কল করুন" বাটন (বাঁ-নিচে, সবসময় দেখা যায়) ---------- */
+.call-fab{position:fixed;bottom:20px;left:20px;z-index:50;display:inline-flex;align-items:center;gap:9px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;
+  border-radius:50px;padding:12px 18px 12px 14px;font-family:'Baloo Da 2',cursive;font-weight:700;font-size:1rem;
+  box-shadow:0 8px 24px rgba(232,73,42,.45);transition:transform .18s;animation:callpulse 2.2s ease-in-out infinite}
+.call-fab:hover{transform:scale(1.05)}
+.call-fab .call-fab-ic{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:callring 1.4s ease-in-out infinite}
+.call-fab .call-fab-ic svg{width:17px;height:17px;color:#fff}
+.call-fab .call-fab-txt{white-space:nowrap;line-height:1}
+@keyframes callpulse{0%,100%{box-shadow:0 8px 24px rgba(232,73,42,.45)}50%{box-shadow:0 8px 30px rgba(232,73,42,.7)}}
+@keyframes callring{0%,100%{transform:rotate(0)}10%,30%{transform:rotate(-12deg)}20%,40%{transform:rotate(12deg)}50%{transform:rotate(0)}}
+
+/* ---------- প্রোডাক্ট লাইক (ফেসবুক-স্টাইল) ---------- */
+.like-row{display:flex;align-items:center;gap:9px;margin-top:9px;flex-wrap:wrap}
+.like-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:50px;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);
+  font-family:'Baloo Da 2',cursive;font-weight:700;font-size:.84rem;cursor:pointer;transition:.16s;flex-shrink:0}
+.like-btn svg{width:16px;height:16px;transition:.16s}
+.like-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
+.like-btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+.like-btn.on svg{fill:var(--accent-deep);stroke:var(--accent-deep)}
+.like-btn.like-pop{animation:likepop .32s ease}
+@keyframes likepop{0%{transform:scale(1)}40%{transform:scale(1.22)}100%{transform:scale(1)}}
+.like-count{font-size:.8rem;color:var(--ink-soft);font-weight:600;line-height:1.2}
+.m-like{margin:4px 0 2px}
+
 @media(max-width:640px){
   .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .call-fab{bottom:16px;left:14px;padding:11px 15px 11px 12px;font-size:.92rem;gap:7px}
+  .call-fab .call-fab-ic{width:27px;height:27px}
+  .fab{bottom:16px;right:14px}
+  .like-btn{padding:5px 10px;font-size:.8rem}
+  .like-count{font-size:.76rem}
   .logo{font-size:1.2rem;min-width:0}
-  .logo img{height:46px}
+  .logo img{height:56px;max-width:180px}
   .logo span{font-size:1.3rem}
   .hero h1{font-size:1.3rem}
   .hero-in{padding:22px 18px}
@@ -804,6 +835,11 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 <a class="fab" id="fab" href="#" target="_blank" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.985-.001-.022zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
 </a>
+<!-- ভাসমান "এখনি কল করুন" বাটন — সবসময় দেখা যাবে (বাঁ-নিচে) -->
+<a class="call-fab" id="callFab" href="#" aria-label="Call" style="display:none">
+  <span class="call-fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+  <span class="call-fab-txt" data-i18n="call_now">Call Now</span>
+</a>
 <button class="totop" id="toTop" onclick="scrollTopSmooth()" aria-label="Back to top" title="উপরে যান">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
 </button>
@@ -1038,6 +1074,7 @@ const T = {
     order_sent:"Order Sent!", contact_soon:"We'll contact you shortly.",
     cart_empty:"🛒 Cart is empty.<br>Add products to order!", added_cart:"Added to cart",
     wishlist:"Wishlist", wish_added:"❤️ Saved to wishlist", wish_removed:"Removed from wishlist", wish_empty:"❤️ Your wishlist is empty.<br>Tap the heart on a product to save it!", wish_save:"Save", wish_saved:"Saved",
+    like:"Like", liked:"Liked", like_count_one:"{x} person likes this", like_count:"{x} people like this", like_first:"Be the first to like", call_now:"Call Now",
     fill_required:"Please fill in name, mobile, and address.", cart_empty_alert:"Cart is empty!",
     coupon_invalid:"❌ Invalid coupon code.", coupon_min:"❌ Minimum order {x} required.",
     coupon_applied:"✅ Applied — {x}!", off_percent:"{v}% off", off_flat:"{v} off", sort_default:"Default", sort_low:"Price: Low to High", sort_high:"Price: High to Low", save_label:"Save {x}", sort_by:"Sort by",
@@ -1075,6 +1112,7 @@ const T = {
     order_sent:"অর্ডার পাঠানো হয়েছে!", contact_soon:"আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।",
     cart_empty:"🛒 কার্ট খালি।<br>অর্ডার করতে পণ্য যোগ করুন!", added_cart:"কার্টে যোগ হয়েছে",
     wishlist:"উইশলিস্ট", wish_added:"❤️ উইশলিস্টে যোগ হয়েছে", wish_removed:"উইশলিস্ট থেকে সরানো হয়েছে", wish_empty:"❤️ আপনার উইশলিস্ট খালি।<br>সেভ করতে প্রোডাক্টের হার্টে ট্যাপ করুন!", wish_save:"সেভ", wish_saved:"সেভ করা",
+    like:"লাইক", liked:"পছন্দ হয়েছে", like_count_one:"{x} জন পছন্দ করেছে", like_count:"{x} জন পছন্দ করেছে", like_first:"প্রথম পছন্দ করুন", call_now:"এখনি কল করুন",
     fill_required:"অনুগ্রহ করে নাম, মোবাইল ও ঠিকানা পূরণ করুন।", cart_empty_alert:"কার্ট খালি!",
     coupon_invalid:"❌ ভুল কুপন কোড।", coupon_min:"❌ ন্যূনতম অর্ডার {x} প্রয়োজন।",
     coupon_applied:"✅ প্রয়োগ হয়েছে — {x}!", off_percent:"{v}% ছাড়", off_flat:"{v} ছাড়", sort_default:"ডিফল্ট", sort_low:"দাম: কম থেকে বেশি", sort_high:"দাম: বেশি থেকে কম", save_label:"{x} সাশ্রয়", sort_by:"সাজান",
@@ -1160,14 +1198,22 @@ function applyConfig(){
     $("#logoImg").src = __logoSrc;
     $("#logoImg").style.display = "block";
     $("#logoEmoji").style.display = "none";
-    // লোগো লোড না হলে আবার ইমোজি দেখাও (সাইট লোগো-ছাড়া দেখাবে না)
+    // লোগো ইমেজ থাকলে পাশের লেখা লুকাও — শুধু লোগোটাই দেখাবে (পরিষ্কার ও বড়)
+    const __nw = document.querySelector('.logo-name-wrap');
+    if(__nw) __nw.style.display = "none";
+    // লোগো লোড না হলে আবার ইমোজি+নাম দেখাও (সাইট লোগো-ছাড়া দেখাবে না)
     $("#logoImg").onerror = function(){
       this.style.display = "none";
       const em = $("#logoEmoji"); if(em) em.style.display = "";
+      if(__nw) __nw.style.display = "";
       this.onerror = null;
     };
     const __fav = $("#faviconLink");
     if(__fav) __fav.href = __logoSrc + (__logoSrc.indexOf("?")>-1 ? "&" : "?") + "v=" + Date.now();
+  } else {
+    // লোগো না থাকলে ইমোজি + নাম দেখাও
+    const __nw = document.querySelector('.logo-name-wrap');
+    if(__nw) __nw.style.display = "";
   }
   typeLogo(S.store_name);
   const __ls = $("#logoSizer"); if(__ls) __ls.textContent = S.store_name || "";
@@ -1176,6 +1222,12 @@ function applyConfig(){
   const callValid = S.phone && !/01XXXX/.test(S.phone);
   $("#callBtn").href = callValid ? ("tel:" + S.phone) : "#";
   $("#callBtn").style.display = callValid ? "" : "none";
+  // ভাসমান "এখনি কল করুন" বাটন — নম্বর থাকলে দেখাবে
+  const callFab = $("#callFab");
+  if(callFab){
+    if(callValid){ callFab.href = "tel:" + ("" + S.phone).replace(/[^0-9+]/g,''); callFab.style.display = ""; }
+    else { callFab.style.display = "none"; }
+  }
   const emailBtn = $("#emailBtn");
   if(emailBtn){
     if(S.email && (""+S.email).trim()){ emailBtn.href = "mailto:" + (""+S.email).trim(); emailBtn.style.display=""; }
@@ -1393,6 +1445,7 @@ async function loadProducts(){
         old_price:parseFloat(String(d.old_price).replace(/[^0-9.]/g,''))||0,
         images:imgs, image_url:imgs[0]||"", videos:vids, description:d.description||"",
         age:(d.age||d.age_group||"").toString().trim(),
+        likes:parseInt(String(d.likes||d.like||"").replace(/[^0-9]/g,''))||0,   // শিটের ঐচ্ছিক likes কলাম (বেস কাউন্ট)
         battery:(d.battery||d.needs_battery||"").toString().toLowerCase().trim(),
         battery_size:(d.battery_size||d.battery_type||"").toString().trim(),
         status:st,
@@ -1715,6 +1768,74 @@ function syncWishHearts(){
     if(lbl) lbl.textContent = on ? t('wish_saved') : t('wish_save');
   });
 }
+
+/* ============================================================
+   👍 প্রোডাক্ট লাইক (ফেসবুক-স্টাইল)
+   কাউন্ট = শিটের `likes` কলামের base + এই ডিভাইসের লাইক (localStorage)।
+   সব ভিজিটরের একসাথে-বাড়া (shared) কাউন্ট চাইলে পরে Apps Script-এ
+   like endpoint + Likes ট্যাব যোগ করা যায় — তখন এই UI সেটাও দেখাতে পারবে।
+   ============================================================ */
+let LIKES = [];
+const LIKE_KEY = 'ilm_likes';
+function loadLikes(){
+  let raw=null;
+  try{ raw=localStorage.getItem(LIKE_KEY); }catch(e){}
+  if(raw===null){ try{ raw=sessionStorage.getItem(LIKE_KEY); }catch(e){} }
+  if(raw===null && window.__likes){ LIKES=window.__likes.slice(); return; }
+  try{ LIKES = raw ? (JSON.parse(raw)||[]).map(String) : []; }catch(e){ LIKES=[]; }
+}
+function saveLikes(){
+  const s=JSON.stringify(LIKES);
+  let ok=false;
+  try{ localStorage.setItem(LIKE_KEY, s); ok=true; }catch(e){}
+  if(!ok){ try{ sessionStorage.setItem(LIKE_KEY, s); ok=true; }catch(e){} }
+  window.__likes = LIKES.slice();   // স্টোরেজ ব্লকড হলেও এই সেশনে টিকবে
+}
+function isLiked(id){ return LIKES.indexOf(String(id))>-1; }
+function likeBase(p){ return Math.max(0, parseInt(p&&p.likes)||0); }
+function likeCount(p){ return likeBase(p) + (isLiked(p.id)?1:0); }
+function likeCountText(p){
+  const n = likeCount(p);
+  if(n<=0) return t('like_first');
+  const key = (n===1) ? 'like_count_one' : 'like_count';
+  return t(key).replace('{x}', bnNum(n));
+}
+/* কার্ড/মডালে লাইক বাটন + কাউন্ট মার্কআপ */
+function likeHTML(p){
+  const on = isLiked(p.id);
+  return `<button type="button" class="like-btn${on?' on':''}" data-like="${escAttr(String(p.id))}" aria-pressed="${on?'true':'false'}" aria-label="Like">`
+    + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>`
+    + `<span data-likelabel>${t(on?'liked':'like')}</span></button>`
+    + `<span class="like-count" data-likecount="${escAttr(String(p.id))}">${likeCountText(p)}</span>`;
+}
+function toggleLike(id){
+  id=String(id);
+  if(isLiked(id)){ LIKES=LIKES.filter(x=>x!==id); }
+  else { LIKES.push(id); showToast('👍 '+t('liked')); }
+  saveLikes();
+  syncLikes();
+}
+/* খোলা সব কার্ড/মডালে লাইক স্টেট ও কাউন্ট আপডেট করে */
+function syncLikes(){
+  document.querySelectorAll('[data-like]').forEach(b=>{
+    const id=b.dataset.like, on=isLiked(id);
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on?'true':'false');
+    const lbl=b.querySelector('[data-likelabel]');
+    if(lbl) lbl.textContent = t(on?'liked':'like');
+  });
+  document.querySelectorAll('[data-likecount]').forEach(c=>{
+    const p=PRODUCTS.find(x=>String(x.id)===String(c.dataset.likecount));
+    if(p) c.textContent = likeCountText(p);
+  });
+}
+/* কন্টেইনারের ভেতরের লাইক বাটনে ক্লিক বাঁধে (pop অ্যানিমেশনসহ) */
+function bindLikes(scope){
+  (scope||document).querySelectorAll('[data-like]').forEach(b=>{
+    b.onclick=(e)=>{ e.stopPropagation(); b.classList.add('like-pop'); setTimeout(()=>b.classList.remove('like-pop'),320); toggleLike(b.dataset.like); };
+  });
+}
+
 function openWish(){ renderWishBody(); ovPush(); document.getElementById('wishOverlay').classList.add('show'); }
 function closeWish(){ document.getElementById('wishOverlay').classList.remove('show'); }
 function openFromWish(id){ closeWish(); openModal(id); }
@@ -1970,6 +2091,7 @@ async function boot(){
   await Promise.all([loadSettings(), loadCoupons(), loadProducts(), loadReviews(), loadPages(), loadBlog()]);
   cur = S.currency || "৳";
   loadWish();
+  loadLikes();
   applyConfig();
   buildCats();
   buildShopCats();
@@ -2451,6 +2573,7 @@ function render(){
           ${sale?`<span class="was">${bnNum(p.old_price)}${cur}</span>`:""}
         </div>
         ${showTkLine?`<div class="save-line">${t('save_label').replace('{x}', bnNum(saveAmt)+cur)}</div>`:""}
+        <div class="like-row">${likeHTML(p)}</div>
         <div class="card-actions">
           ${actionBtn}
         </div>
@@ -2459,6 +2582,7 @@ function render(){
   }).join("");
   $("#grid").querySelectorAll("[data-cart]").forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); addToCart(b.dataset.cart); });
   $("#grid").querySelectorAll("[data-wish]").forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); b.classList.add('heart-pop'); setTimeout(()=>b.classList.remove('heart-pop'),300); toggleWish(b.dataset.wish); });
+  bindLikes($("#grid"));
   $("#grid").querySelectorAll(".card").forEach(c=>c.onclick=()=>openModal(c.dataset.id));
 }
 
@@ -2513,7 +2637,7 @@ function openModal(id, fromLink){
   const mpInner = mSale
     ? `${bnNum(current.price)}${cur}<span class="m-was">${bnNum(current.old_price)}${cur}</span>${mExtra}`
     : `${bnNum(current.price)}${cur}`;
-  $("#mHead").innerHTML = `<div class="gallery">${galInner}</div><div class="m-title"><h3>${current.name}</h3><div class="mp">${mpInner}</div><button type="button" class="copy-link-btn" onclick="copyProductLink(this)">🔗 <span>${t('copy_link')}</span></button><button type="button" class="m-heart${isWished(current.id)?' on':''}" data-wish="${current.id}" onclick="toggleWish('${current.id}')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span data-wishlabel>${isWished(current.id)?t('wish_saved'):t('wish_save')}</span></button></div>`;
+  $("#mHead").innerHTML = `<div class="gallery">${galInner}</div><div class="m-title"><h3>${current.name}</h3><div class="mp">${mpInner}</div><div class="like-row m-like">${likeHTML(current)}</div><button type="button" class="copy-link-btn" onclick="copyProductLink(this)">🔗 <span>${t('copy_link')}</span></button><button type="button" class="m-heart${isWished(current.id)?' on':''}" data-wish="${current.id}" onclick="toggleWish('${current.id}')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> <span data-wishlabel>${isWished(current.id)?t('wish_saved'):t('wish_save')}</span></button></div>`;
   // 🔗 প্রোডাক্ট ডিপ-লিংক: URL-এ #p=slug বসাও — কপি লিংকের সাথে মিল রেখে
   // fromLink হলে হ্যাশ আগে থেকেই আছে (deep-link/ব্যাক) → replace; নইলে নতুন এন্ট্রি push,
   // যাতে মোবাইলের ব্যাক বাটন সাইট থেকে বের না হয়ে মডাল বন্ধ করে।
@@ -2523,6 +2647,7 @@ function openModal(id, fromLink){
     else history.pushState({p:1}, '', __pHash);
   }catch(e){ location.hash = 'p=' + encodeURIComponent(productSlug(current)); }
   renderGalMain();
+  bindLikes(document.getElementById('mHead'));
   const ovModal = document.querySelector('#overlay .modal'); if(ovModal) ovModal.scrollTop = 0;
   const desc = (current.description||"").trim();
   const dt = $("#mDescTitle");
