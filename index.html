@@ -404,6 +404,11 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdro
 .done h3{font-size:1.25rem;margin-bottom:6px}
 .done p{color:var(--ink-soft)}
 .order-msg{margin:12px auto 0;color:var(--accent-deep);font-weight:600;font-size:.95rem;max-width:90%;line-height:1.5}
+.wa-confirm-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;margin:18px auto 0;padding:13px 22px;border-radius:50px;background:#25D366;color:#fff;font-family:'Baloo Da 2',cursive;font-weight:700;font-size:1rem;box-shadow:0 8px 22px rgba(37,211,102,.4);transition:transform .15s,background .15s}
+.wa-confirm-btn:hover{background:#1ebe57;transform:scale(1.03)}
+.wa-confirm-btn svg{width:22px;height:22px;fill:#fff;flex-shrink:0}
+.done-close-btn{display:block;margin:14px auto 0;padding:11px 26px;border-radius:50px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-family:'Baloo Da 2',cursive;font-weight:700;font-size:.92rem;cursor:pointer;transition:.16s}
+.done-close-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
 
 /* ---------- Customer Reviews ---------- */
 .review-add-btn{border:none;background:var(--accent);color:#fff;font-family:'Baloo Da 2';font-weight:700;font-size:.92rem;padding:9px 16px;border-radius:11px;cursor:pointer;transition:.18s;white-space:nowrap}
@@ -938,6 +943,11 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
       <p id="orderIdLine" class="order-msg" style="display:none"></p>
       <p id="payPendingLine" class="order-msg" style="display:none"></p>
       <p id="orderMsg" class="order-msg" style="display:none"></p>
+      <a id="waConfirmBtn" class="wa-confirm-btn" href="#" target="_blank" rel="noopener" style="display:none">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.985-.001-.022zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+        <span data-i18n="wa_confirm">Confirm order on WhatsApp</span>
+      </a>
+      <button type="button" class="done-close-btn" onclick="closeCart()" data-i18n="done_close">Done</button>
     </div>
   </div>
 </div>
@@ -1072,6 +1082,7 @@ const T = {
     cod_note:"Cash on delivery. We'll contact you shortly.",
     cod_note_long:"Cash on delivery. We'll contact you shortly to confirm your order.",
     order_sent:"Order Sent!", contact_soon:"We'll contact you shortly.",
+    wa_confirm:"Confirm order on WhatsApp", done_close:"Done",
     cart_empty:"🛒 Cart is empty.<br>Add products to order!", added_cart:"Added to cart",
     wishlist:"Wishlist", wish_added:"❤️ Saved to wishlist", wish_removed:"Removed from wishlist", wish_empty:"❤️ Your wishlist is empty.<br>Tap the heart on a product to save it!", wish_save:"Save", wish_saved:"Saved",
     like:"Like", liked:"Liked", like_count_one:"{x} person likes this", like_count:"{x} people like this", like_first:"Be the first to like", call_now:"Call Now",
@@ -1110,6 +1121,7 @@ const T = {
     cod_note:"ক্যাশ অন ডেলিভারি। আমরা শীঘ্রই যোগাযোগ করব।",
     cod_note_long:"ক্যাশ অন ডেলিভারি। অর্ডার নিশ্চিত করতে আমরা শীঘ্রই যোগাযোগ করব।",
     order_sent:"অর্ডার পাঠানো হয়েছে!", contact_soon:"আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।",
+    wa_confirm:"WhatsApp-এ অর্ডার নিশ্চিত করুন", done_close:"বন্ধ করুন",
     cart_empty:"🛒 কার্ট খালি।<br>অর্ডার করতে পণ্য যোগ করুন!", added_cart:"কার্টে যোগ হয়েছে",
     wishlist:"উইশলিস্ট", wish_added:"❤️ উইশলিস্টে যোগ হয়েছে", wish_removed:"উইশলিস্ট থেকে সরানো হয়েছে", wish_empty:"❤️ আপনার উইশলিস্ট খালি।<br>সেভ করতে প্রোডাক্টের হার্টে ট্যাপ করুন!", wish_save:"সেভ", wish_saved:"সেভ করা",
     like:"লাইক", liked:"পছন্দ হয়েছে", like_count_one:"{x} জন পছন্দ করেছে", like_count:"{x} জন পছন্দ করেছে", like_first:"প্রথম পছন্দ করুন", call_now:"এখনি কল করুন",
@@ -2041,7 +2053,9 @@ async function submitCartOrder(){
       fetch(CONFIG.orderEndpoint,{method:"POST",mode:"no-cors",body:fd});
     }catch(e){}
   }
-  // 📲 Settings শিটে order_whatsapp = on থাকলে অর্ডারটা WhatsApp-এও পাঠাবে
+  // 📲 WhatsApp confirm — অটো-রিডাইরেক্ট নয়; কনফার্মেশন স্ক্রিনে বাটনে বসবে,
+  //    ভিজিটর চাইলে ট্যাপ করে অর্ডার WhatsApp-এও পাঠাবে (নতুন ট্যাব নিজে থেকে খুলবে না)।
+  let __waHref = "";
   try{
     const waOn = ['on','yes','true','1'].includes((S.order_whatsapp||'').toString().toLowerCase().trim());
     if(waOn && S.whatsapp && !/8801XXXX/.test(S.whatsapp)){
@@ -2057,7 +2071,7 @@ async function submitCartOrder(){
         "মোবাইল: " + phone + "\n" +
         "ঠিকানা: " + addr +
         (note ? "\nনোট: " + note : "");
-      window.open("https://wa.me/" + S.whatsapp + "?text=" + encodeURIComponent(waMsg), "_blank");
+      __waHref = "https://wa.me/" + S.whatsapp + "?text=" + encodeURIComponent(waMsg);
     }
   }catch(e){}
   // Analytics: অর্ডার ইভেন্ট (GA4 + Meta Pixel)
@@ -2078,11 +2092,16 @@ async function submitCartOrder(){
   if(oidEl){ oidEl.innerHTML = t('order_id_label') + ': <b>' + orderId + '</b><br>' + t('keep_order_id'); oidEl.style.display="block"; }
   const ppEl = document.getElementById("payPendingLine");
   if(ppEl){ if(payStatus){ ppEl.textContent = t('pay_verify_note'); ppEl.style.display="block"; } else { ppEl.style.display="none"; } }
+  // WhatsApp বাটন — order_whatsapp on হলে দেখাবে; ভিজিটর নিজে ট্যাপ করবে
+  const waBtn = document.getElementById("waConfirmBtn");
+  if(waBtn){
+    if(__waHref){ waBtn.href = __waHref; waBtn.style.display=""; }
+    else { waBtn.style.display="none"; }
+  }
   document.getElementById("cartBody").innerHTML="";
   document.getElementById("cartCheckout").style.display="none";
-  // অর্ডার সফল মেসেজ পড়ার সময় দিতে — ৯ সেকেন্ড পর নিজে থেকে বন্ধ হবে
+  // কনফার্মেশন নিজে থেকে বন্ধ হবে না — ভিজিটর Order ID দেখে/WhatsApp পাঠিয়ে নিজে বন্ধ করবে
   clearTimeout(window.__orderDoneTimer);
-  window.__orderDoneTimer = setTimeout(closeCart, 9000);
 }
 
 document.getElementById("cartOverlay").onclick=e=>{if(e.target===document.getElementById("cartOverlay"))closeCart();};
