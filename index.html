@@ -49,11 +49,12 @@
    থিম — রঙ বদলাতে চাইলে এখানে বদলাও
    ============================================================ */
 :root{
-  --bg:#FFF8F0;
+  --bg:#FFFFFF;
   --card:#FFFFFF;
   --ink:#2A2118;
   --ink-soft:#6B5E50;
-  --line:#EFE3D6;
+  --line:#ECE6DF;
+  --img-bg:#F4F5F7;       /* ছবির পেছনের হালকা ধূসর (লোড হওয়ার আগে) */
   --accent:#FF6B4A;       /* প্রধান রঙ */
   --accent-deep:#E8492A;
   --accent-soft:#FFE7E0;
@@ -76,8 +77,8 @@ body{
 body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(circle at 12% 8%, rgba(255,210,63,.18), transparent 40%),
-    radial-gradient(circle at 88% 0%, rgba(255,107,74,.12), transparent 42%);
+    radial-gradient(circle at 12% 8%, rgba(255,210,63,.05), transparent 38%),
+    radial-gradient(circle at 88% 0%, rgba(255,107,74,.04), transparent 40%);
 }
 h1,h2,h3,.display{font-family:'Baloo Da 2',cursive;font-weight:700;letter-spacing:-.01em}
 a{color:inherit;text-decoration:none}
@@ -94,7 +95,7 @@ img{max-width:100%;display:block}
 @keyframes annblink{50%{opacity:0}}
 
 /* ---------- Header ---------- */
-header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar{max-width:1180px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:16px}
 .logo{font-family:'Baloo Da 2',cursive;font-weight:800;font-size:1.55rem;color:var(--accent-deep);display:flex;align-items:center;gap:8px;white-space:nowrap}
 .logo img{height:80px;width:auto;display:block}
@@ -140,7 +141,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 @keyframes promofade{from{opacity:0}to{opacity:1}}
 .promo-box{position:relative;width:100%;max-width:420px;background:var(--card);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);animation:promopop .3s cubic-bezier(.4,0,.2,1)}
 @keyframes promopop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
-.promo-box img{width:100%;display:block;background:#FBF2E9}
+.promo-box img{width:100%;display:block;background:var(--img-bg)}
 .promo-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.45);color:#fff;font-size:1.45rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:.18s}
 .promo-x:hover{background:rgba(0,0,0,.72);transform:scale(1.08)}
 .promo-title{text-align:center;font-family:'Baloo Da 2';font-size:1.2rem;color:var(--ink);padding:14px 16px 0}
@@ -159,18 +160,18 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .cart-empty{text-align:center;padding:40px 20px;color:var(--ink-soft);font-weight:600}
 .ci{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
 .ci:last-child{border-bottom:none}
-.ci-img{width:52px;height:52px;border-radius:10px;background:#FBF2E9;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Baloo Da 2';font-weight:800;color:var(--accent);font-size:1.3rem;overflow:hidden}
+.ci-img{width:52px;height:52px;border-radius:10px;background:var(--img-bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Baloo Da 2';font-weight:800;color:var(--accent);font-size:1.3rem;overflow:hidden}
 .ci-img img{width:100%;height:100%;object-fit:cover;border-radius:10px}
 .ci-info{flex:1;min-width:0}
 .ci-name{font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ci-price{color:var(--accent-deep);font-family:'Baloo Da 2';font-weight:700;font-size:.95rem;margin-top:2px}
 .ci-qty{display:flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
-.ci-qty button{width:32px;height:32px;border:none;background:#FBF2E9;font-size:1.1rem;font-weight:700;cursor:pointer;color:var(--accent-deep)}
+.ci-qty button{width:32px;height:32px;border:none;background:var(--img-bg);font-size:1.1rem;font-weight:700;cursor:pointer;color:var(--accent-deep)}
 .ci-qty span{width:34px;text-align:center;font-weight:700;font-size:.95rem}
 .ci-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:1.3rem;padding:4px;line-height:1;transition:.15s}
 .ci-del:hover{color:var(--accent-deep)}
 .cart-checkout{padding:14px 20px 24px;border-top:1px solid var(--line)}
-.add-btn{margin-top:12px;width:100%;border:1.5px dashed var(--accent);background:#FFF8F0;color:var(--accent-deep);font-family:'Baloo Da 2';font-weight:700;font-size:.9rem;padding:9px;border-radius:12px;cursor:pointer;transition:.18s}
+.add-btn{margin-top:12px;width:100%;border:1.5px dashed var(--accent);background:#FFF6F3;color:var(--accent-deep);font-family:'Baloo Da 2';font-weight:700;font-size:.9rem;padding:9px;border-radius:12px;cursor:pointer;transition:.18s}
 .add-btn:hover{background:#FFE8DC}
 
 
@@ -179,7 +180,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .cats{padding:14px 18px 4px;display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .cats::-webkit-scrollbar{display:none}
 /* মোবাইলে ডান পাশে হালকা ফেইড — বোঝাতে যে ডানে আরও ক্যাটেগরি আছে */
-.cats-wrap::after{content:"";position:absolute;top:0;right:0;bottom:4px;width:34px;pointer-events:none;background:linear-gradient(90deg,rgba(255,248,240,0),var(--bg))}
+.cats-wrap::after{content:"";position:absolute;top:0;right:0;bottom:4px;width:34px;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,0),var(--bg))}
 /* ডেস্কটপ/ট্যাবে — সব ক্যাটেগরি কয়েক লাইনে ভাগ হয়ে একসাথে দেখা যাবে */
 @media(min-width:768px){
   .cats{flex-wrap:wrap;overflow-x:visible}
@@ -211,11 +212,11 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .hero .badge{display:inline-block;background:var(--green);color:#fff;font-weight:700;font-size:.78rem;padding:5px 12px;border-radius:50px;margin-bottom:10px}
 
 /* ---------- Hero slider ---------- */
-.hero-slider{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:#FBF2E9;aspect-ratio:8/3}
+.hero-slider{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--img-bg);aspect-ratio:8/3}
 .hero-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
 .hero-slider .slide{position:relative;flex:0 0 100%;height:100%}
-.hero-slider .slide img{width:100%;height:100%;object-fit:contain;object-position:center;background:#FBF2E9;display:block}
-.hero-slider .slide .slide-video{width:100%;height:100%;border:0;display:block;background:#FBF2E9;object-fit:cover}
+.hero-slider .slide img{width:100%;height:100%;object-fit:contain;object-position:center;background:var(--img-bg);display:block}
+.hero-slider .slide .slide-video{width:100%;height:100%;border:0;display:block;background:var(--img-bg);object-fit:cover}
 .hero-slider .slide .ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;gap:10px;padding:0 7% 28px;background:linear-gradient(0deg,rgba(40,33,24,.7),rgba(40,33,24,.2) 45%,transparent 75%)}
 .hero-slider .slide .ov h2{font-family:'Baloo Da 2',cursive;color:#fff;font-size:2.05rem;line-height:1.15;max-width:90%;text-shadow:0 2px 14px rgba(0,0,0,.45);margin:0}
 .hero-slider .slide .ov p{color:#fff;font-size:1.02rem;font-weight:600;max-width:80%;text-shadow:0 1px 10px rgba(0,0,0,.45);margin:0}
@@ -270,7 +271,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
   overflow:hidden;display:flex;flex-direction:column;transition:.22s;box-shadow:var(--shadow);
 }
 .card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
-.thumb{position:relative;aspect-ratio:1/1;background:#FBF2E9;overflow:hidden}
+.thumb{position:relative;aspect-ratio:1/1;background:var(--img-bg);overflow:hidden}
 .thumb img{width:100%;height:100%;object-fit:cover;object-position:center;transition:.4s}
 .card:hover .thumb img{transform:scale(1.06)}
 .thumb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Baloo Da 2';font-size:2.6rem;font-weight:800;color:var(--accent);opacity:.55}
@@ -344,7 +345,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .modal{background:#fff;border-radius:22px;max-width:430px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:pop .25s ease}
 @keyframes pop{from{transform:scale(.94) translateY(10px);opacity:0}to{transform:scale(1);opacity:1}}
 .modal-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center}
-.modal-head img,.modal-head .ph{width:58px;height:58px;border-radius:12px;object-fit:cover;background:#FBF2E9;flex-shrink:0}
+.modal-head img,.modal-head .ph{width:58px;height:58px;border-radius:12px;object-fit:cover;background:var(--img-bg);flex-shrink:0}
 .modal-head .ph{display:flex;align-items:center;justify-content:center;font-family:'Baloo Da 2';font-weight:800;color:var(--accent)}
 .modal-head h3{font-size:1.05rem;line-height:1.3}
 .modal-head .mp{color:var(--accent-deep);font-family:'Baloo Da 2';font-weight:700;margin-top:2px}
@@ -355,10 +356,10 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .field input,.field textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;font-family:inherit;font-size:.95rem;outline:none;transition:.18s;color:var(--ink)}
 .field input:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,107,74,.1)}
 .qty{display:flex;align-items:center;gap:0;width:fit-content;border:1.5px solid var(--line);border-radius:11px;overflow:hidden}
-.qty button{width:42px;height:42px;border:none;background:#FBF2E9;font-size:1.3rem;font-weight:700;cursor:pointer;color:var(--accent-deep)}
+.qty button{width:42px;height:42px;border:none;background:var(--img-bg);font-size:1.3rem;font-weight:700;cursor:pointer;color:var(--accent-deep)}
 .qty input{width:54px;text-align:center;border:none;border-radius:0;font-size:1rem;font-weight:700}
 .qty input:focus{box-shadow:none}
-.total{background:#FBF2E9;border-radius:12px;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px;font-weight:600}
+.total{background:var(--img-bg);border-radius:12px;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px;font-weight:600}
 .total b{font-family:'Baloo Da 2';font-size:1.25rem;color:var(--accent-deep)}
 .field select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;font-family:inherit;font-size:.95rem;background:#fff;color:var(--ink);outline:none;cursor:pointer}
 .field select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,107,74,.1)}
@@ -367,7 +368,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .coupon-row button{border:none;background:var(--ink);color:#fff;font-family:'Baloo Da 2';font-weight:700;padding:0 20px;border-radius:11px;cursor:pointer;transition:.18s}
 .coupon-row button:hover{background:var(--accent-deep)}
 .coupon-msg{font-size:.82rem;font-weight:600;margin-top:6px}
-.breakdown{background:#FBF2E9;border-radius:12px;padding:13px 16px;margin:8px 0 16px}
+.breakdown{background:var(--img-bg);border-radius:12px;padding:13px 16px;margin:8px 0 16px}
 .brow{display:flex;justify-content:space-between;align-items:center;font-size:.93rem;font-weight:500;color:var(--ink-soft);padding:3px 0}
 #sumDisc{color:var(--green);font-weight:700}
 .brow.total-row{border-top:1px dashed #E0CFBC;margin-top:7px;padding-top:10px;color:var(--ink);font-weight:600}
@@ -419,7 +420,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,248,240,.92);backdro
 .rv-name{font-weight:700;color:var(--ink);font-size:.96rem}
 .rv-prof{font-size:.78rem;color:var(--ink-soft);margin-top:1px}
 .rv-date{font-size:.74rem;color:var(--ink-soft);margin-left:8px;font-weight:600}
-.rv-prod{display:inline-block;margin-top:8px;padding:3px 11px;border-radius:50px;background:#FBF2E9;border:1px solid var(--line);color:var(--ink-soft);font-size:.78rem;font-weight:700}
+.rv-prod{display:inline-block;margin-top:8px;padding:3px 11px;border-radius:50px;background:var(--img-bg);border:1px solid var(--line);color:var(--ink-soft);font-size:.78rem;font-weight:700}
 .rv-stars{color:#F5B301;font-size:.95rem;letter-spacing:1px}
 .rv-stars .off{color:#E0D6C8}
 .rv-text{color:var(--ink-soft);font-size:.92rem;line-height:1.6;margin-top:4px}
@@ -477,7 +478,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 /* ---------- Product Gallery (multiple images) ---------- */
 .modal-head{flex-direction:column;align-items:stretch;gap:12px}
 .modal-head .gallery{width:100%}
-.gal-main{position:relative;width:100%;background:#FBF2E9;border-radius:14px;overflow:hidden}
+.gal-main{position:relative;width:100%;background:var(--img-bg);border-radius:14px;overflow:hidden}
 .modal-head .gal-main img{width:100%;height:auto;display:block;border-radius:14px;object-fit:contain}
 .gal-main .ph-big{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-family:'Baloo Da 2';font-weight:800;font-size:3.4rem;color:var(--accent);opacity:.55}
 .gal-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;padding:0;z-index:2}
@@ -489,7 +490,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 .gal-dots button.on{background:#fff;width:18px;border-radius:4px}
 .gal-thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .gal-thumbs::-webkit-scrollbar{display:none}
-.gal-thumb{flex:0 0 auto;width:54px;height:54px;border-radius:10px;border:2px solid transparent;background:#FBF2E9;overflow:hidden;cursor:pointer;padding:0;transition:.18s}
+.gal-thumb{flex:0 0 auto;width:54px;height:54px;border-radius:10px;border:2px solid transparent;background:var(--img-bg);overflow:hidden;cursor:pointer;padding:0;transition:.18s}
 .gal-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .gal-thumb.on{border-color:var(--accent)}
 .modal-head .gal-main .gal-video{width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:14px;display:block;background:#000}
@@ -551,7 +552,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 @media(min-width:480px){.rel-grid{grid-template-columns:repeat(4,1fr)}}
 .rel-card{border:1px solid var(--line);background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;font-family:inherit;transition:.18s;display:flex;flex-direction:column}
 .rel-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
-.rel-thumb{aspect-ratio:1/1;background:#FBF2E9;overflow:hidden}
+.rel-thumb{aspect-ratio:1/1;background:var(--img-bg);overflow:hidden}
 .rel-thumb img{width:100%;height:100%;object-fit:contain}
 .rel-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Baloo Da 2';font-weight:800;font-size:1.6rem;color:var(--accent);opacity:.55}
 .rel-name{font-size:.8rem;font-weight:600;color:var(--ink);padding:7px 8px 2px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
@@ -582,7 +583,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 .blog-row{display:grid;grid-auto-flow:column;grid-auto-columns:235px;gap:13px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .blog-card{border:1px solid var(--line);background:var(--card);border-radius:16px;overflow:hidden;cursor:pointer;text-align:left;padding:0;font-family:inherit;transition:.18s;display:flex;flex-direction:column;box-shadow:var(--shadow)}
 .blog-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--accent)}
-.blog-thumb{aspect-ratio:16/9;background:#FBF2E9;overflow:hidden}
+.blog-thumb{aspect-ratio:16/9;background:var(--img-bg);overflow:hidden}
 .blog-thumb img{width:100%;height:100%;object-fit:cover}
 .blog-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;opacity:.55}
 .blog-meta{padding:11px 13px 13px;display:flex;flex-direction:column;gap:5px;flex:1}
@@ -602,7 +603,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 .trk-wrap{padding:20px 20px 24px}
 .trk-wrap h3{font-family:'Baloo Da 2';font-weight:700;font-size:1.2rem;color:var(--ink);margin-bottom:13px}
 .trk-msg{margin-top:13px;font-size:.9rem;color:var(--ink-soft);text-align:center}
-.trk-card{margin-top:12px;border:1px solid var(--line);border-radius:13px;padding:12px 14px;background:#FFFDF9}
+.trk-card{margin-top:12px;border:1px solid var(--line);border-radius:13px;padding:12px 14px;background:#FAFAFA}
 .trk-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .trk-row b{font-family:'Baloo Da 2';color:var(--ink)}
 .trk-badge{font-size:.74rem;font-weight:800;padding:4px 11px;border-radius:50px;color:#fff;white-space:nowrap}
@@ -844,7 +845,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
   <div class="cart-modal">
     <div class="cart-modal-head">
       <h3>❤️ <span data-i18n="wishlist">Wishlist</span></h3>
-      <button class="x" style="position:static;box-shadow:none;background:#FBF2E9" onclick="closeWish()">×</button>
+      <button class="x" style="position:static;box-shadow:none;background:var(--img-bg)" onclick="closeWish()">×</button>
     </div>
     <div class="cart-body" id="wishBody"></div>
   </div>
@@ -854,7 +855,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
   <div class="cart-modal">
     <div class="cart-modal-head">
       <h3 data-i18n="your_cart">🛒 Your Cart</h3>
-      <button class="x" style="position:static;box-shadow:none;background:#FBF2E9" onclick="closeCart()">×</button>
+      <button class="x" style="position:static;box-shadow:none;background:var(--img-bg)" onclick="closeCart()">×</button>
     </div>
     <div class="cart-body" id="cartBody"></div>
     <div class="cart-checkout" id="cartCheckout" style="display:none">
@@ -1143,41 +1144,30 @@ function typeAnnounce(text){
   frame();
 }
 
-/* লোগোর পাশের নাম — সবসময় টাইপিং (লুপ) */
+/* লোগোর পাশের নাম — পুরো নাম সবসময় স্থির ও পরিষ্কার (টাইপিং লুপ বন্ধ) */
 let __logoTimer;
 function typeLogo(text){
   const el = document.getElementById('logoName');
   if(!el) return;
   clearTimeout(__logoTimer);
-  const full = (text||"").toString().trim();
-  if(!full){ el.textContent=""; return; }
-  const TYPE=120, ERASE=70, HOLD=1800, PAUSE=500;
-  let i=0, phase="type";
-  const cur = '<span class="ann-cursor logo-cur"></span>';
-  function frame(){
-    if(phase==="type"){
-      i++;
-      el.innerHTML = esc(full.slice(0,i)) + cur;
-      if(i>=full.length){ phase="erase"; __logoTimer=setTimeout(frame, HOLD); }
-      else __logoTimer=setTimeout(frame, TYPE);
-    } else {
-      i--;
-      el.innerHTML = esc(full.slice(0,Math.max(0,i))) + cur;
-      if(i<=0){ phase="type"; __logoTimer=setTimeout(frame, PAUSE); }
-      else __logoTimer=setTimeout(frame, ERASE);
-    }
-  }
-  frame();
+  el.textContent = (text||"").toString().trim();
 }
 
 function applyConfig(){
   typeAnnounce(S.announce);
   if(S.logo_url){
-    $("#logoImg").src = S.logo_url;
+    const __logoSrc = imgURL(("" + S.logo_url).trim());
+    $("#logoImg").src = __logoSrc;
     $("#logoImg").style.display = "block";
     $("#logoEmoji").style.display = "none";
+    // লোগো লোড না হলে আবার ইমোজি দেখাও (সাইট লোগো-ছাড়া দেখাবে না)
+    $("#logoImg").onerror = function(){
+      this.style.display = "none";
+      const em = $("#logoEmoji"); if(em) em.style.display = "";
+      this.onerror = null;
+    };
     const __fav = $("#faviconLink");
-    if(__fav) __fav.href = S.logo_url + (S.logo_url.indexOf("?")>-1 ? "&" : "?") + "v=" + Date.now();
+    if(__fav) __fav.href = __logoSrc + (__logoSrc.indexOf("?")>-1 ? "&" : "?") + "v=" + Date.now();
   }
   typeLogo(S.store_name);
   const __ls = $("#logoSizer"); if(__ls) __ls.textContent = S.store_name || "";
@@ -1202,7 +1192,7 @@ function applyConfig(){
   // ফুটারে লোগো (logo_url থাকলে) — থাকলে নামের উপরে লোগো দেখাবে
   const fLogo = $("#fLogo");
   if(fLogo){
-    if(S.logo_url && (""+S.logo_url).trim()){ fLogo.src = (""+S.logo_url).trim(); fLogo.alt = S.store_name||""; fLogo.style.display="block"; }
+    if(S.logo_url && (""+S.logo_url).trim()){ fLogo.src = imgURL((""+S.logo_url).trim()); fLogo.alt = S.store_name||""; fLogo.style.display="block"; }
     else { fLogo.style.display="none"; }
   }
   // ফুটারের ট্যাগ লাইন — শিটের footer_tagline
@@ -1501,6 +1491,42 @@ function bannerImgFallback(img){
   }
   img.onerror=null;   // আর চেষ্টা নয়
 }
+/* যেকোনো ছবির জন্য সাধারণ ফলব্যাক — Drive হলে ধাপে ধাপে বিকল্প, শেষে অক্ষর-প্লেসহোল্ডার */
+function imgFallback(img){
+  const step = +(img.dataset.step||0);
+  if(step===0 && img.dataset.fb1){ img.dataset.step=1; img.src=img.dataset.fb1; return; }
+  if(step<=1 && img.dataset.fb2){ img.dataset.step=2; img.src=img.dataset.fb2; return; }
+  if(step<=2 && img.dataset.fb3==="1"){            // Drive না হলে: একই URL cache-buster দিয়ে আরেকবার
+    img.dataset.step=3;
+    const base=img.dataset.orig||img.src;
+    img.src = base + (base.indexOf('?')>-1?'&':'?') + 'r=' + Date.now();
+    return;
+  }
+  img.onerror=null;
+  // সব চেষ্টা ব্যর্থ — প্যারেন্ট ঘরে অক্ষর-প্লেসহোল্ডার দেখাও (data-ph থাকলে)
+  if(img.dataset.ph && img.parentNode){
+    img.parentNode.innerHTML = '<div class="'+(img.dataset.phcls||'ph')+'">'+img.dataset.ph+'</div>';
+  }
+}
+/* গুগল ড্রাইভ/সাধারণ — দুটোই সামলানো রবাস্ট <img> মার্কআপ।
+   url: ছবির লিংক, alt: alt টেক্সট, opt:{cls, ph(প্লেসহোল্ডার অক্ষর), phcls(প্লেসহোল্ডার ক্লাস), eager} */
+function smartImg(url, alt, opt){
+  opt = opt || {};
+  const raw = String(url||"");
+  const id  = driveId(raw);
+  const src = imgURL(raw);
+  const fb1 = id ? `https://drive.google.com/thumbnail?id=${id}&sz=w1600` : "";  // Drive বিকল্প
+  const fb2 = id ? `https://lh3.googleusercontent.com/d/${id}` : "";             // আকার ছাড়া lh3
+  const fb3 = id ? "" : "1";                                                     // Drive না হলে: একই URL আবার
+  const phAttr  = opt.ph ? ` data-ph="${escAttr(opt.ph)}"` : "";
+  const phClsAttr = opt.phcls ? ` data-phcls="${escAttr(opt.phcls)}"` : "";
+  const clsAttr = opt.cls ? ` class="${opt.cls}"` : "";
+  const idAttr  = opt.id  ? ` id="${opt.id}"` : "";
+  const load    = opt.eager ? "eager" : "lazy";
+  return `<img${clsAttr}${idAttr} src="${escAttr(src)}" alt="${escAttr(alt||"")}" loading="${load}"`
+    + ` data-orig="${escAttr(raw)}" data-fb1="${escAttr(fb1)}" data-fb2="${escAttr(fb2)}" data-fb3="${fb3}"${phAttr}${phClsAttr}`
+    + ` onerror="imgFallback(this)">`;
+}
 /* ব্যানারের মিডিয়া: YouTube → অটোপ্লে মিউট লুপ iframe; .mp4/.webm → ভিডিও; বাকি সব → ছবি */
 function bannerMediaHTML(url){
   const yt = ytId(url);
@@ -1527,7 +1553,7 @@ function galMediaHTML(it){
     if(yt) return `<iframe class="gal-video" src="https://www.youtube.com/embed/${yt}?rel=0&modestbranding=1&playsinline=1" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
     return `<video class="gal-video" src="${it.url}" controls playsinline preload="metadata"></video>`;
   }
-  return `<img id="galImg" src="${it.url}" alt="${escAttr(current?current.name:'')}">`;
+  return smartImg(it.url, current?current.name:'', {id:'galImg', eager:true});
 }
 function starHTML(n){
   let s="";
@@ -1700,7 +1726,7 @@ function renderWishBody(){
   const items=WISHLIST.map(id=>PRODUCTS.find(p=>String(p.id)===String(id))).filter(Boolean);
   if(!items.length){ body.innerHTML='<div class="cart-empty">'+t('wish_empty')+'</div>'; return; }
   body.innerHTML = items.map(p=>{
-    const imgHTML = p.image_url ? `<img src="${p.image_url}" alt="${escAttr(p.name)}">` : (p.name[0]||'?');
+    const imgHTML = p.image_url ? smartImg(p.image_url, p.name) : (p.name[0]||'?');
     const act = p.soldout
       ? `<button class="wish-add" disabled>${t('out_of_stock')}</button>`
       : `<button class="wish-add" onclick="wishAddToCart('${p.id}')">${t('add_to_cart')}</button>`;
@@ -1795,7 +1821,7 @@ function renderCartBody(){
   checkout.style.display="block";
   body.innerHTML = CART.map(item=>{
     const imgHTML = item.image_url
-      ? `<img src="${item.image_url}" alt="${item.name}">`
+      ? smartImg(item.image_url, item.name)
       : item.name[0]||'?';
     return `<div class="ci">
       <div class="ci-img">${imgHTML}</div>
@@ -2402,7 +2428,7 @@ function render(){
     const sale = p.old_price && p.old_price>p.price;
     const off = sale ? Math.round((1-p.price/p.old_price)*100) : 0;
     const img = p.image_url
-      ? `<img src="${p.image_url}" alt="${p.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=&quot;ph&quot;>${(p.name[0]||'?')}</div>'">`
+      ? smartImg(p.image_url, p.name, {ph:(p.name[0]||'?')})
       : `<div class="ph">${p.name[0]||'?'}</div>`;
     const multi = (p.images && p.images.length>1)
       ? `<span class="multi-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M21 7v12a2 2 0 0 1-2 2H7"/></svg>${p.images.length}</span>`
@@ -2469,7 +2495,7 @@ function openModal(id, fromLink){
       ? `<div class="gal-thumbs">${galItems.map((it,i)=>{
           const inner = it.type==='video'
             ? `${ytThumb(it.url)}<span class="gal-thumb-play">▶</span>`
-            : `<img src="${it.url}" alt="" loading="lazy">`;
+            : smartImg(it.url, '');
           return `<button type="button" class="gal-thumb${it.type==='video'?' vid':''}${i===0?' on':''}" onclick="showGalImg(${i})">${inner}</button>`;
         }).join("")}</div>`
       : "";
@@ -2579,7 +2605,7 @@ function renderRelated(){
   wrap.innerHTML = `<div class="rel-title">${t('related_title')}</div><div class="rel-grid">` +
     rel.map(p=>{
       const img = p.image_url
-        ? `<img src="${p.image_url}" alt="${escAttr(p.name)}" loading="lazy">`
+        ? smartImg(p.image_url, p.name, {ph:esc(p.name[0]||'?'), phcls:'rel-ph'})
         : `<div class="rel-ph">${esc(p.name[0]||'?')}</div>`;
       return `<button class="rel-card" type="button" data-rel="${p.id}">
         <div class="rel-thumb">${img}</div>
@@ -2789,7 +2815,7 @@ function showPromo(){
   // প্রোডাক্ট ডিপ-লিংকে কোনো মডাল খোলা থাকলে পপআপ দেখাবে না (দুটো একসাথে নয়)
   const pm=document.getElementById('overlay');
   if(pm && pm.classList.contains('show')) return;
-  wrap.innerHTML=`<img src="${imgURL(img)}" alt="offer" onerror="this.style.display='none'">`;
+  wrap.innerHTML = smartImg(img, 'offer');
   const ttl=(S.popup_title||'').toString().trim();
   if(ttl){ titleEl.textContent=ttl; titleEl.style.display='block'; }
   else { titleEl.style.display='none'; }
