@@ -569,7 +569,7 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
 .toast .tk{color:#fff;background:var(--green);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem}
 
 /* ---------- Footer brand (logo + tagline) ---------- */
-.foot-brand .foot-logo{height:56px;width:auto;margin-bottom:11px;display:block;border-radius:10px}
+.foot-brand .foot-logo{height:44px;width:auto;max-width:200px;object-fit:contain;margin-bottom:13px;display:inline-block;border-radius:12px;background:#fff;padding:8px 12px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .foot-tagline{color:#F0DFD2;font-weight:600;font-size:.96rem;margin-bottom:9px;display:block;line-height:1.4}
 
 /* ---------- Modal details title + battery suggest + related ---------- */
@@ -1001,7 +1001,7 @@ const CONFIG = {
 
 /* শিট লিঙ্ক না দেওয়া পর্যন্ত এই ডিফল্ট মান দিয়ে সাইট দেখাবে */
 const DEFAULTS = {
-  store_name:"ঘরের রং", logo_url:"", phone:"01XXXXXXXXX", whatsapp:"8801XXXXXXXXX",
+  store_name:"ঘরের রং", logo_url:"", favicon_url:"", phone:"01XXXXXXXXX", whatsapp:"8801XXXXXXXXX",
   messenger:"https://m.me/your-page", facebook:"https://facebook.com/your-page",
   address:"Dhaka, Bangladesh", announce:"🎉 Welcome! Tap a product to place your order.",
   hero_title:"Best Products, Best Prices", hero_sub:"Tap a product to order easily.",
@@ -1220,8 +1220,6 @@ function applyConfig(){
       if(__nw) __nw.style.display = "";
       this.onerror = null;
     };
-    const __fav = $("#faviconLink");
-    if(__fav) __fav.href = __logoSrc + (__logoSrc.indexOf("?")>-1 ? "&" : "?") + "v=" + Date.now();
   } else {
     // লোগো না থাকলে ইমোজি + নাম দেখাও
     const __nw = document.querySelector('.logo-name-wrap');
@@ -1230,6 +1228,13 @@ function applyConfig(){
   typeLogo(S.store_name);
   const __ls = $("#logoSizer"); if(__ls) __ls.textContent = S.store_name || "";
   document.title = S.store_name;
+  // 🔖 ট্যাবের ফেভিকন — favicon_url থাকলে সেটা (শুধু মার্ক), নইলে logo_url
+  const __favSrc = (S.favicon_url && (""+S.favicon_url).trim()) ? imgURL((""+S.favicon_url).trim())
+                 : (S.logo_url && (""+S.logo_url).trim()) ? imgURL((""+S.logo_url).trim()) : "";
+  if(__favSrc){
+    const __fav = $("#faviconLink");
+    if(__fav) __fav.href = __favSrc + (__favSrc.indexOf("?")>-1 ? "&" : "?") + "v=" + Date.now();
+  }
   $("#callNum").textContent = S.phone || "";
   const callValid = S.phone && !/01XXXX/.test(S.phone);
   $("#callBtn").href = callValid ? ("tel:" + S.phone) : "#";
@@ -1252,11 +1257,17 @@ function applyConfig(){
   }
   $("#heroTitle").textContent = S.hero_title;
   $("#heroSub").textContent = S.hero_sub;
-  $("#fName").textContent = S.store_name;
-  // ফুটারে লোগো (logo_url থাকলে) — থাকলে নামের উপরে লোগো দেখাবে
+  const __hasLogo = S.logo_url && (""+S.logo_url).trim();
+  const fNameEl = $("#fName");
+  if(fNameEl){
+    // লোগো থাকলে ফুটারে নামের টেক্সট লুকাও (লোগোতেই নাম আছে — ডাবল হবে না)
+    if(__hasLogo){ fNameEl.style.display = "none"; }
+    else { fNameEl.textContent = S.store_name; fNameEl.style.display = ""; }
+  }
+  // ফুটারে লোগো (logo_url থাকলে) — সাদা চিপের ওপর বসবে যাতে গাঢ় ফুটারে কালো অংশও দেখা যায়
   const fLogo = $("#fLogo");
   if(fLogo){
-    if(S.logo_url && (""+S.logo_url).trim()){ fLogo.src = imgURL((""+S.logo_url).trim()); fLogo.alt = S.store_name||""; fLogo.style.display="block"; }
+    if(__hasLogo){ fLogo.src = imgURL((""+S.logo_url).trim()); fLogo.alt = S.store_name||""; fLogo.style.display="inline-block"; }
     else { fLogo.style.display="none"; }
   }
   // ফুটারের ট্যাগ লাইন — শিটের footer_tagline
@@ -2162,7 +2173,15 @@ function initReviewModal(){
     $("#rvSubmit").disabled=true;
     if(CONFIG.reviewEndpoint){
       try{
-        const fd=new URLSearchParams({ type:"review", time:new Date().toLocaleString('en-GB'), name, rating:rvRating, text, product });
+        const __now = new Date().toLocaleString('en-GB');
+        const fd=new URLSearchParams({
+          form:"review", type:"review",
+          time:__now, timestamp:__now,
+          name, profession, product,
+          rating:rvRating,
+          review:text, text:text,
+          status:"pending"
+        });
         fetch(CONFIG.reviewEndpoint,{method:"POST",mode:"no-cors",body:fd});
       }catch(e){}
     }
