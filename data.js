@@ -116,6 +116,7 @@ function grNormalizeProduct(d) {
     battery_size: (d.battery_size || '').toString().trim(),
     status: st,
     sort_order: Number(d.sort_order) || 0,
+    bestseller: (d.is_bestseller === true || d.is_bestseller === 'true' || d.is_bestseller === 1),
     soldout: _SOLDOUT.includes(st)
   };
 }

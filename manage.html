@@ -171,6 +171,12 @@ th{color:var(--muted);font-size:12px;font-weight:600}
               <option value="hidden">লুকানো (Hidden)</option>
             </select>
           </div>
+          <div class="field">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+              <input type="checkbox" id="pBestseller" style="width:auto;margin:0">
+              <span>🔥 বেস্ট সেলার ব্যাজ দেখাও</span>
+            </label>
+          </div>
           <div class="field"><label>বিবরণ</label><textarea id="pDesc" placeholder="পণ্যের বিস্তারিত..."></textarea></div>
         </div>
       </div>
@@ -374,6 +380,7 @@ window.editProduct = id=>{
   $('#pAge').value=p.age||''; $('#pLikes').value=p.likes||0;
   $('#pBattery').value=p.battery||''; $('#pBatterySize').value=p.battery_size||'';
   $('#pStatus').value=p.status||'active'; $('#pSort').value=p.sort_order||0;
+  $('#pBestseller').checked = !!p.bestseller;
   $('#pDesc').value=p.description||''; $('#pVideos').value=(p.videos||[]).join('\n');
   mainImageUrl=p.image_url||''; galleryUrls=(p.images||[]).slice();
   const pv=$('#pMainPreview'); if(mainImageUrl){ pv.src=mainImageUrl; pv.style.display='block'; } else pv.style.display='none';
@@ -385,6 +392,7 @@ function clearProductForm(){
   $('#pEditorTitle').textContent='নতুন পণ্য যোগ করুন';
   ['pId','pName','pCategory','pPrice','pOldPrice','pAge','pBatterySize','pDesc','pVideos'].forEach(id=>$('#'+id).value='');
   $('#pLikes').value=0; $('#pSort').value=0; $('#pBattery').value=''; $('#pStatus').value='active';
+  $('#pBestseller').checked=false;
   $('#pMainPreview').style.display='none'; renderGallery();
 }
 $('#pClearBtn').onclick = clearProductForm;
@@ -407,7 +415,8 @@ $('#pSaveBtn').onclick = async ()=>{
     battery:$('#pBattery').value,
     battery_size:$('#pBatterySize').value.trim(),
     status:$('#pStatus').value,
-    sort_order:parseInt($('#pSort').value)||0
+    sort_order:parseInt($('#pSort').value)||0,
+    is_bestseller:$('#pBestseller').checked
   };
   $('#pSaveBtn').disabled=true;
   try{ await grSaveProduct(row); showBanner('পণ্য সেভ হয়েছে ✅',true); clearProductForm(); await refreshProducts(); }
