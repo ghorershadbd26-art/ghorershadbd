@@ -803,6 +803,9 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
       <img id="fLogo" class="foot-logo" alt="" style="display:none" />
       <h4 id="fName">ঘরের রং</h4>
       <p id="fTagline" class="foot-tagline" style="display:none"></p>
+    </div>
+    <div class="foot-col" id="addrCol">
+      <h4>ঠিকানা</h4>
       <p id="fAddr"></p>
     </div>
     <div class="foot-col">
@@ -1285,6 +1288,7 @@ function applyConfig(){
     document.documentElement.style.setProperty('--footer', (""+S.footer_color).trim());
   }
   $("#fAddr").textContent = S.address ? ("📍 " + S.address) : "";
+  { const ac=document.getElementById('addrCol'); if(ac) ac.style.display = (S.address && (""+S.address).trim()) ? "" : "none"; }
   const wa = "https://wa.me/" + S.whatsapp;
   $("#fab").href = wa;
   const setLink = (id, url) => {
@@ -1308,7 +1312,7 @@ function applyConfig(){
     const soc = document.querySelector('.foot .socials');
     if(brand && soc){
       const followCol = soc.closest('.foot-col');
-      brand.insertBefore(soc, document.getElementById('fAddr'));
+      brand.appendChild(soc);
       if(followCol && followCol!==brand) followCol.style.display='none';
     }
   }catch(e){}
