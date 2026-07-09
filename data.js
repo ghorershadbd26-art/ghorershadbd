@@ -49,6 +49,20 @@ function _toArr(v) {
 }
 const _SOLDOUT = ['soldout','sold out','stockout','stock out','out','out of stock','no stock','nostock'];
 
+/* সাজানোর নিয়ম: ক্রম দেওয়া পণ্য (১,২,৩…) আগে — ছোট থেকে বড়;
+   ক্রম 0/খালি মানে সাধারণ — এগুলো সবার শেষে (আগের ক্রম বজায় থাকে)। */
+function _sortProducts(arr) {
+  return arr
+    .map((p, i) => [p, i])
+    .sort((A, B) => {
+      const a = A[0].sort_order > 0 ? A[0].sort_order : Infinity;
+      const b = B[0].sort_order > 0 ? B[0].sort_order : Infinity;
+      if (a !== b) return a - b;
+      return A[1] - B[1];   // সমান হলে আগের ক্রম রাখো (স্থিতিশীল)
+    })
+    .map(x => x[0]);
+}
+
 
 /* ============================================================
    ১) SETTINGS  — পুরনো "Settings শিট" (key=value) → object S
@@ -101,6 +115,7 @@ function grNormalizeProduct(d) {
     battery: (d.battery || '').toString().toLowerCase().trim(),
     battery_size: (d.battery_size || '').toString().trim(),
     status: st,
+    sort_order: Number(d.sort_order) || 0,
     soldout: _SOLDOUT.includes(st)
   };
 }
@@ -109,12 +124,12 @@ async function grLoadProducts() {
   const db = getDB(); if (!db) return [];
   const { data, error } = await db.from('products')
     .select('*')
-    .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true });
   if (error) { console.error('grLoadProducts:', error.message); return []; }
-  return (data || [])
+  const list = (data || [])
     .map(grNormalizeProduct)
     .filter(p => p.name && p.status !== 'hidden');
+  return _sortProducts(list);
 }
 
 
