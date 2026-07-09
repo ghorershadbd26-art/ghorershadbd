@@ -979,24 +979,20 @@ footer{background:var(--footer);color:#F3E9DD;margin-top:30px;padding:38px 18px 
   </div>
 </div>
 
+<!-- ডেটা এখন Google Sheet নয়, Supabase থেকে আসে -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="data.js"></script>
 <script>
 /* ============================================================
-   ১) তোমার তথ্য এখানে বসাও  (CONFIG)
+   ১) CONFIG — ডেটা এখন Supabase থেকে (data.js দেখুন)
+   নিচের ফ্ল্যাগগুলো শুধু ফিচার চালু/বন্ধ বোঝায়।
    ============================================================ */
 const CONFIG = {
-  // Google Sheet "Publish to web (CSV)" — একই শিট, নতুন ডেটা (ঘরের রং)
-  productsCsvUrl : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=0&single=true&output=csv",   // Products ট্যাব
-  settingsCsvUrl : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1660105064&single=true&output=csv",   // Settings ট্যাব
-  couponsCsvUrl  : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1396735338&single=true&output=csv",   // Coupons ট্যাব
-  // Pages/Blog — তোমার শিটে এই ট্যাব দুটো নেই, তাই আপাতত বন্ধ।
-  // বানালে নিচে CSV লিঙ্ক বসাও; সেকশন নিজে থেকেই দেখাবে।
+  orderEndpoint  : true,   // অর্ডার চালু (Supabase-এ সেভ হয়)
+  reviewEndpoint : true,   // রিভিউ চালু (Supabase-এ যায়, admin অ্যাপ্রুভ করে)
+  // Pages/Blog Supabase-এ নেই — তাই বন্ধ (খালি রাখলে সেকশন লুকানো থাকে)
   pagesCsvUrl    : "",
   blogCsvUrl     : "",
-  orderEndpoint  : "https://script.google.com/macros/s/AKfycbxLSZX3Wnk-ruAS-LxySYTc2aVtLB3CimiI1ZvAUR4YieOIe9LAc4Yuf00QgtfOdMP5hA/exec",
-  reviewsCsvUrl  : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1763756933&single=true&output=csv",   // Reviews ট্যাব
-  reviewEndpoint : "https://script.google.com/macros/s/AKfycbxLSZX3Wnk-ruAS-LxySYTc2aVtLB3CimiI1ZvAUR4YieOIe9LAc4Yuf00QgtfOdMP5hA/exec",   // একই Apps Script (type=review)
-  // অর্ডার ট্র্যাকিং — Orders ট্যাবের CSV (ফোন নম্বর দিয়ে খোঁজে)
-  ordersCsvUrl   : "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIxnQh-AeTsuzGOsYva6sPpA226Fkm5wEkGy5ezL30OFw-1UoRZtqh_rOYYLYPPQJKK3zg79l5E2co/pub?gid=1760562102&single=true&output=csv",
 };
 
 /* শিট লিঙ্ক না দেওয়া পর্যন্ত এই ডিফল্ট মান দিয়ে সাইট দেখাবে */
@@ -1416,23 +1412,15 @@ async function fetchCSV(url){
 }
 
 async function loadSettings(){
-  if(!CONFIG.settingsCsvUrl) return;
   try{
-    const rows = await fetchCSV(CONFIG.settingsCsvUrl);   // key,value columns
-    rows.forEach(r=>{ if(r.key) S[r.key.trim()] = (r.value||"").trim(); });
+    const cfg = await grLoadSettings();               // Supabase: store_config
+    Object.keys(cfg).forEach(k=>{ S[k] = cfg[k]; });
   }catch(e){}
 }
 
 async function loadCoupons(){
-  if(!CONFIG.couponsCsvUrl) return;
   try{
-    const rows = await fetchCSV(CONFIG.couponsCsvUrl);    // code,type,value,min
-    const list = rows.filter(r=>r.code).map(r=>({
-      code:r.code.trim(),
-      type:(r.type||"flat").trim().toLowerCase(),
-      value:parseFloat(String(r.value).replace(/[^0-9.]/g,''))||0,
-      min:parseFloat(String(r.min).replace(/[^0-9.]/g,''))||0
-    }));
+    const list = await grLoadCoupons();               // Supabase: coupons
     if(list.length) COUPONS = list;
   }catch(e){}
 }
@@ -1451,49 +1439,25 @@ function gatherMedia(d, bases, sep){
 }
 
 async function loadProducts(){
-  if(!CONFIG.productsCsvUrl){ PRODUCTS = SAMPLE; return; }
   try{
-    const data = await fetchCSV(CONFIG.productsCsvUrl);
-    PRODUCTS = data.map(d=>{
-      const imgs = gatherMedia(d, ['image_url','image'], /[|\n,]+/).map(imgURL);
-      const vids = gatherMedia(d, ['video','product_video'], /[|\n]+/);
-      const st = (d.status||"active").toLowerCase().trim();
-      // category ঘরে কমা (বা | / ) দিয়ে একাধিক — যেমন "Book, Best Seller"
-      const catArr = String(d.category||"").split(/\s*[,|/]\s*/).map(s=>s.trim()).filter(Boolean);
-      return {
-        id:d.id, name:d.name,
-        category:catArr[0]||"",     // মূল ক্যাটেগরি (কার্ডে দেখানোর জন্য — কমার প্রথমটা)
-        categories:catArr,          // সব ক্যাটেগরি — Book, Best Seller সব এখানে
-        price:parseFloat(String(d.price).replace(/[^0-9.]/g,''))||0,
-        old_price:parseFloat(String(d.old_price).replace(/[^0-9.]/g,''))||0,
-        images:imgs, image_url:imgs[0]||"", videos:vids, description:d.description||"",
-        age:(d.age||d.age_group||"").toString().trim(),
-        likes:parseInt(String(d.likes||d.like||"").replace(/[^0-9]/g,''))||0,   // শিটের ঐচ্ছিক likes কলাম (বেস কাউন্ট)
-        battery:(d.battery||d.needs_battery||"").toString().toLowerCase().trim(),
-        battery_size:(d.battery_size||d.battery_type||"").toString().trim(),
-        status:st,
-        soldout:['soldout','sold out','stockout','stock out','out','out of stock','no stock','nostock'].includes(st)
-      };
-    }).filter(p=>p.name && p.status!=="hidden");
-    if(!PRODUCTS.length) PRODUCTS = SAMPLE;
+    const list = await grLoadProducts();              // Supabase: products (একই শেপ)
+    PRODUCTS = list.length ? list : SAMPLE;
   }catch(e){ PRODUCTS = SAMPLE; }
 }
 
 /* ---- কাস্টমার রিভিউ ---- */
 async function loadReviews(){
-  if(!CONFIG.reviewsCsvUrl) return;
   try{
-    const data = await fetchCSV(CONFIG.reviewsCsvUrl);
-    const ok = s => ['approved','approve','show','active','yes','published'].includes((s||"").toLowerCase().trim());
-    REVIEWS = data.filter(d => (d.name||d.review) && ok(d.status)).map(d=>({
-      name:(d.name||"").trim(),
-      profession:(d.profession||"").trim(),
-      product:(d.product||"").trim(),
-      date:(d.timestamp||d.time||d.date||"").toString().trim(),
-      rating:Math.max(0,Math.min(5, Math.round(parseFloat(d.rating)||0))),
-      review:(d.review||"").trim(),
-      photo:imgURL((d.photo||"").trim()),
-      video:(d.video||"").trim()
+    const list = await grLoadReviews();               // Supabase: approved reviews
+    REVIEWS = list.map(d=>({
+      name:d.name||"",
+      profession:d.profession||"",
+      product:d.product||"",
+      date:d.time||"",
+      rating:Math.max(0,Math.min(5, Math.round(d.rating||0))),
+      review:d.text||d.review||"",
+      photo:"",
+      video:""
     }));
   }catch(e){ REVIEWS = []; }
 }
@@ -2049,21 +2013,27 @@ async function submitCartOrder(){
   const productList = CART.map(x=>`${x.name} x${x.qty}`).join(" | ");
   const qtyTotal = CART.reduce((s,x)=>s+x.qty,0);
   document.getElementById("cartSubmitBtn").disabled=true;
-  if(CONFIG.orderEndpoint){
-    try{
-      const fd=new URLSearchParams({
-        form:"order",
-        time:new Date().toLocaleString('en-GB'),
-        product:productList, qty:qtyTotal, price:"-",
-        subtotal:c.subtotal, coupon:couponCode, discount:c.discount,
-        delivery_area:locText, delivery_charge:c.ship, total:c.grand,
-        name, phone, address:addr, note,
-        order_id:orderId, payment_method:payMethodText,
-        trx_id:payTrxV, sender_number:paySenderV, payment_status:payStatus
-      });
-      fetch(CONFIG.orderEndpoint,{method:"POST",mode:"no-cors",body:fd});
-    }catch(e){}
-  }
+  // ── Supabase-এ অর্ডার সেভ ──
+  try{
+    await grSubmitOrder({
+      order_code: orderId,
+      status: "Pending",
+      customer_name: name, phone: phone, address: addr, note: note,
+      product_list: productList,
+      items: CART.map(x=>({ id:x.id, name:x.name, qty:x.qty, price:x.price })),
+      quantity: qtyTotal,
+      subtotal: c.subtotal,
+      delivery_area: locText, delivery_charge: c.ship,
+      coupon: couponCode, discount: c.discount,
+      grand_total: c.grand,
+      payment_method: payMethodText,
+      trx_id: payTrxV, sender_number: paySenderV, payment_status: payStatus
+    });
+    try{ if(typeof grSendOrderEmail==='function') grSendOrderEmail({
+      order_id: orderId, customer: name, phone: phone, address: addr,
+      product: productList, total: c.grand, payment: payMethodText
+    }); }catch(_){}
+  }catch(e){ console.error("Supabase order save failed:", e); }
   // 📲 WhatsApp confirm — অটো-রিডাইরেক্ট নয়; কনফার্মেশন স্ক্রিনে বাটনে বসবে,
   //    ভিজিটর চাইলে ট্যাপ করে অর্ডার WhatsApp-এও পাঠাবে (নতুন ট্যাব নিজে থেকে খুলবে না)।
   let __waHref = "";
@@ -2171,20 +2141,9 @@ function initReviewModal(){
     const product=($("#rvProduct")?$("#rvProduct").value:"").trim();
     if(!name || !rvRating || !text){ alert(t('review_fill')); return; }
     $("#rvSubmit").disabled=true;
-    if(CONFIG.reviewEndpoint){
-      try{
-        const __now = new Date().toLocaleString('en-GB');
-        const fd=new URLSearchParams({
-          form:"review", type:"review",
-          time:__now, timestamp:__now,
-          name, profession, product,
-          rating:rvRating,
-          review:text, text:text,
-          status:"pending"
-        });
-        fetch(CONFIG.reviewEndpoint,{method:"POST",mode:"no-cors",body:fd});
-      }catch(e){}
-    }
+    try{
+      await grSubmitReview({ name, profession, product, rating: rvRating, text });
+    }catch(e){ console.error("Supabase review submit failed:", e); }
     $("#reviewForm").style.display="none";
     $("#reviewDone").style.display="block";
     // Settings শিটে review_message লিখলে সেটাও ধন্যবাদের নিচে দেখাবে
@@ -2392,12 +2351,9 @@ async function doTrack(){
   if(q.length < 4){ box.innerHTML = `<div class="trk-msg">${t('track_none')}</div>`; return; }
   box.innerHTML = `<div class="trk-msg">${t('track_searching')}</div>`;
   try{
-    if(!CONFIG.ordersCsvUrl){ box.innerHTML = `<div class="trk-msg">${t('track_fail')}</div>`; return; }
-    const rows = await fetchCSV(CONFIG.ordersCsvUrl);   // Orders ট্যাব (CSV)
-    const digits = q.replace(/\D/g,'');
-    const orders = rows.filter(r => (r.phone||'').replace(/\D/g,'').includes(digits));
+    const orders = await grTrackByPhone(q);            // Supabase RPC: track_by_phone
     if(!orders.length){ box.innerHTML = `<div class="trk-msg">${t('track_none')}</div>`; return; }
-    box.innerHTML = orders.slice(-5).reverse().map(o=>{
+    box.innerHTML = orders.map(o=>{
       const st = o.status || 'Pending';
       const totalNum = parseFloat(String(o.total).replace(/[^0-9.]/g,'')) || 0;
       const paid = /confirm|paid|done|received|verified|yes|পরিশোধ/i.test(o.payment_status||'') || /deliver/i.test(st);
