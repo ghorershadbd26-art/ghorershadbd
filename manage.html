@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ঘরের রং — Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F4F1; --card:#fff; --ink:#2A2118; --muted:#8A7E70; --line:#E7E1D9;
+  --accent:#FF6B4A; --accent-deep:#E8492A; --green:#16A34A; --error:#DC2626;
+  --radius:14px; --shadow:0 4px 18px rgba(120,80,40,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hind Siliguri',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding-bottom:60px}
+h1,h2,h3{font-weight:700}
+input,textarea,select,button{font-family:inherit;font-size:15px}
+input,textarea,select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none;transition:.15s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,107,74,.12)}
+textarea{resize:vertical;min-height:70px}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:0 0 5px 2px}
+.field{margin-bottom:14px}
+.btn{border:none;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-deep)}
+.btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent-deep)}
+.btn-danger{background:rgba(220,38,38,.1);color:var(--error);border:none}
+.btn-danger:hover{background:rgba(220,38,38,.18)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+/* Login */
+.lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lock-box{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:32px 28px;width:100%;max-width:380px;text-align:center}
+.lock-box h2{color:var(--accent-deep);margin-bottom:6px}
+.lock-box p{color:var(--muted);font-size:14px;margin-bottom:20px}
+.lock-box .field{text-align:left}
+.lock-err{color:var(--error);font-size:13px;margin-top:10px;min-height:18px}
+
+/* Shell */
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.topbar h1{font-size:22px;color:var(--accent-deep)}
+.topbar .who{font-size:13px;color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{padding:9px 16px;border-radius:50px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;font-weight:600;font-size:14px}
+.tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.panel{display:none}
+.panel.on{display:block}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card h3{font-size:16px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:720px){.grid2{grid-template-columns:1fr 1fr}}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.banner{padding:11px 15px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:600;display:none}
+.banner.ok{display:block;background:rgba(22,163,74,.12);color:var(--green)}
+.banner.err{display:block;background:rgba(220,38,38,.1);color:var(--error)}
+
+/* Product list */
+.plist{display:grid;grid-template-columns:1fr;gap:10px}
+.pitem{display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px}
+.pitem img{width:52px;height:52px;object-fit:cover;border-radius:8px;background:var(--bg);flex-shrink:0}
+.pitem .pinfo{flex:1;min-width:0}
+.pitem .pinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pitem .pinfo span{font-size:12px;color:var(--muted)}
+.pitem .pacts{display:flex;gap:6px;flex-shrink:0}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:50px;background:var(--bg);color:var(--muted)}
+.pill.soldout{background:rgba(220,38,38,.1);color:var(--error)}
+.pill.hidden{background:#eee;color:#999}
+.thumb-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumb-strip .t{position:relative;width:60px;height:60px;border-radius:8px;overflow:hidden;border:1.5px solid var(--line)}
+.thumb-strip .t img{width:100%;height:100%;object-fit:cover}
+.thumb-strip .t button{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--error);color:#fff;border:2px solid #fff;font-size:11px;line-height:1;cursor:pointer}
+.mini{font-size:12px;color:var(--muted);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-size:12px;font-weight:600}
+.tag{font-size:11px;padding:2px 8px;border-radius:50px}
+.tag.pending{background:rgba(255,107,74,.12);color:var(--accent-deep)}
+.tag.approved{background:rgba(22,163,74,.12);color:var(--green)}
+.tag.hidden{background:#eee;color:#999}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="lock" id="lockScreen">
+  <div class="lock-box">
+    <h2>ঘরের রং — Admin</h2>
+    <p>Supabase অ্যাডমিন লগইন</p>
+    <div class="field"><label>ইমেইল</label><input type="email" id="loginEmail" autocomplete="username" placeholder="you@example.com"></div>
+    <div class="field"><label>পাসওয়ার্ড</label><input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••"></div>
+    <button class="btn btn-primary" id="loginBtn" style="width:100%">প্রবেশ করুন</button>
+    <div class="lock-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN UI ══════════ -->
+<div id="adminUI" style="display:none">
+<div class="wrap">
+  <div class="topbar">
+    <div><h1>ঘরের রং Admin</h1><div class="who" id="whoAmI"></div></div>
+    <button class="btn btn-ghost" id="logoutBtn">লগআউট</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-tab="products">পণ্য</button>
+    <button class="tab" data-tab="settings">সেটিংস</button>
+    <button class="tab" data-tab="coupons">কুপন</button>
+    <button class="tab" data-tab="reviews">রিভিউ</button>
+    <button class="tab" data-tab="orders">অর্ডার</button>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+  <!-- ─── PRODUCTS ─── -->
+  <div class="panel on" id="panel-products">
+    <div class="card">
+      <h3 id="pEditorTitle">নতুন পণ্য যোগ করুন</h3>
+      <div class="grid2">
+        <div>
+          <div class="field">
+            <label>মূল ছবি</label>
+            <img id="pMainPreview" src="" alt="" style="width:100%;max-height:200px;object-fit:contain;background:var(--bg);border-radius:10px;display:none;margin-bottom:8px">
+            <input type="file" id="pMainFile" accept="image/*">
+            <div class="mini">ছবি বাছলেই Supabase-এ আপলোড হবে (আগে নিচে ID দিন)।</div>
+          </div>
+          <div class="field">
+            <label>গ্যালারি (একাধিক ছবি)</label>
+            <input type="file" id="pGalleryFile" accept="image/*" multiple>
+            <div class="thumb-strip" id="pGalleryStrip"></div>
+          </div>
+          <div class="field">
+            <label>ভিডিও লিংক (প্রতি লাইনে একটি, ঐচ্ছিক)</label>
+            <textarea id="pVideos" placeholder="https://youtu.be/XXXX"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="row2">
+            <div class="field"><label>Product ID (ইউনিক) *</label><input type="text" id="pId" placeholder="wall-paint-red বা 101"></div>
+            <div class="field"><label>ক্রম (sort)</label><input type="number" id="pSort" placeholder="0" inputmode="numeric"></div>
+          </div>
+          <div class="field"><label>নাম *</label><input type="text" id="pName" placeholder="পণ্যের নাম"></div>
+          <div class="field">
+            <label>ক্যাটেগরি (কমা দিয়ে একাধিক)</label>
+            <input type="text" id="pCategory" list="catList" placeholder="বই, বেস্ট সেলার">
+            <datalist id="catList"></datalist>
+          </div>
+          <div class="row2">
+            <div class="field"><label>দাম *</label><input type="number" id="pPrice" placeholder="500" inputmode="numeric"></div>
+            <div class="field"><label>আগের দাম (ছাড়)</label><input type="number" id="pOldPrice" placeholder="600" inputmode="numeric"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>বয়স (ঐচ্ছিক)</label><input type="text" id="pAge" placeholder="3+"></div>
+            <div class="field"><label>বেস লাইক</label><input type="number" id="pLikes" placeholder="0" inputmode="numeric"></div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>ব্যাটারি লাগে?</label>
+              <select id="pBattery"><option value="">না</option><option value="yes">হ্যাঁ</option></select>
+            </div>
+            <div class="field"><label>ব্যাটারি সাইজ</label><input type="text" id="pBatterySize" placeholder="AA / AAA"></div>
+          </div>
+          <div class="field">
+            <label>স্ট্যাটাস</label>
+            <select id="pStatus">
+              <option value="active">সক্রিয় (Active)</option>
+              <option value="soldout">স্টক শেষ (Sold Out)</option>
+              <option value="hidden">লুকানো (Hidden)</option>
+            </select>
+          </div>
+          <div class="field"><label>বিবরণ</label><textarea id="pDesc" placeholder="পণ্যের বিস্তারিত..."></textarea></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button class="btn btn-primary" id="pSaveBtn">💾 সেভ করুন</button>
+        <button class="btn btn-ghost" id="pClearBtn">নতুন / Clear</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>সব পণ্য <span id="pCount" style="color:var(--muted);font-size:13px"></span></h3>
+      <div class="plist" id="pList"></div>
+    </div>
+  </div>
+
+  <!-- ─── SETTINGS ─── -->
+  <div class="panel" id="panel-settings">
+    <div class="card">
+      <h3>স্টোর সেটিংস (আগের Settings শিট)</h3>
+      <div id="settingsForm"></div>
+      <button class="btn btn-primary" id="settingsSaveBtn" style="margin-top:8px">💾 সব সেটিংস সেভ করুন</button>
+    </div>
+  </div>
+
+  <!-- ─── COUPONS ─── -->
+  <div class="panel" id="panel-coupons">
+    <div class="card">
+      <h3>নতুন / এডিট কুপন</h3>
+      <div class="row2">
+        <div class="field"><label>কোড *</label><input type="text" id="cCode" placeholder="EID5"></div>
+        <div class="field">
+          <label>ধরন</label>
+          <select id="cType"><option value="percent">শতাংশ (%)</option><option value="flat">টাকা (flat)</option></select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>মান</label><input type="number" id="cValue" placeholder="5" inputmode="numeric"></div>
+        <div class="field"><label>ন্যূনতম সাবটোটাল</label><input type="number" id="cMin" placeholder="0" inputmode="numeric"></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" id="cSaveBtn">💾 কুপন সেভ</button>
+        <button class="btn btn-ghost" id="cClearBtn">Clear</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>সব কুপন</h3>
+      <table><thead><tr><th>কোড</th><th>ধরন</th><th>মান</th><th>ন্যূনতম</th><th></th></tr></thead>
+      <tbody id="cList"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ─── REVIEWS ─── -->
+  <div class="panel" id="panel-reviews">
+    <div class="card">
+      <h3>রিভিউ মডারেশন <span class="mini" id="rvCount"></span></h3>
+      <table><thead><tr><th>নাম</th><th>রেটিং</th><th>রিভিউ</th><th>স্ট্যাটাস</th><th></th></tr></thead>
+      <tbody id="rvList"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ─── ORDERS ─── -->
+  <div class="panel" id="panel-orders">
+    <div class="card">
+      <h3>সাম্প্রতিক অর্ডার</h3>
+      <table><thead><tr><th>কোড</th><th>নাম / ফোন</th><th>পণ্য</th><th>মোট</th><th>স্ট্যাটাস</th></tr></thead>
+      <tbody id="oList"></tbody></table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="data.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let PRODUCTS = [], SETTINGS = {}, editingId = null, mainImageUrl = '', galleryUrls = [];
+
+function showBanner(msg, ok){
+  const b = $('#banner'); b.textContent = msg;
+  b.className = 'banner ' + (ok ? 'ok' : 'err');
+  clearTimeout(window.__bt); window.__bt = setTimeout(()=>{ b.className='banner'; }, 4000);
+}
+
+/* ══════════ LOGIN ══════════ */
+async function checkSession(){
+  const s = await grGetSession();
+  if(s){ enterAdmin(s); } else { $('#lockScreen').style.display='flex'; $('#adminUI').style.display='none'; }
+}
+async function enterAdmin(session){
+  $('#lockScreen').style.display='none';
+  $('#adminUI').style.display='block';
+  try{ $('#whoAmI').textContent = session.user ? session.user.email : ''; }catch(e){}
+  await loadAll();
+}
+$('#loginBtn').onclick = async ()=>{
+  const email=$('#loginEmail').value.trim(), pass=$('#loginPass').value;
+  const err=$('#loginErr'); err.textContent='';
+  if(!email||!pass){ err.textContent='ইমেইল ও পাসওয়ার্ড দিন।'; return; }
+  $('#loginBtn').disabled=true; $('#loginBtn').textContent='লগইন হচ্ছে...';
+  try{
+    const data = await grAdminLogin(email, pass);
+    await enterAdmin(data.session || (await grGetSession()));
+  }catch(e){
+    err.textContent = 'লগইন ব্যর্থ: ' + (e.message||'ভুল ইমেইল/পাসওয়ার্ড');
+  }finally{
+    $('#loginBtn').disabled=false; $('#loginBtn').textContent='প্রবেশ করুন';
+  }
+};
+$('#loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#loginBtn').click(); });
+$('#logoutBtn').onclick = async ()=>{ await grAdminLogout(); location.reload(); };
+
+/* ══════════ TABS ══════════ */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    $('#panel-'+t.dataset.tab).classList.add('on');
+  };
+});
+
+/* ══════════ LOAD ALL ══════════ */
+async function loadAll(){
+  SETTINGS = await grLoadSettings();
+  buildSettingsForm();
+  buildCatList();
+  await refreshProducts();
+  await refreshCoupons();
+  await refreshReviews();
+  await refreshOrders();
+}
+
+/* ══════════ PRODUCTS ══════════ */
+function buildCatList(){
+  const cats = String(SETTINGS.categories||'').split(/\s*[,|\n]\s*/).map(s=>s.trim()).filter(Boolean);
+  $('#catList').innerHTML = cats.map(c=>`<option value="${esc(c)}">`).join('');
+}
+async function refreshProducts(){
+  PRODUCTS = await grLoadProductsAdmin();
+  $('#pCount').textContent = '(' + PRODUCTS.length + ')';
+  $('#pList').innerHTML = PRODUCTS.map(p=>{
+    const img = p.image_url || (p.images&&p.images[0]) || '';
+    let pill='';
+    if(p.status==='soldout') pill='<span class="pill soldout">Sold Out</span>';
+    else if(p.status==='hidden') pill='<span class="pill hidden">Hidden</span>';
+    return `<div class="pitem">
+      <img src="${esc(img)}" onerror="this.style.visibility='hidden'">
+      <div class="pinfo"><b>${esc(p.name)}</b>
+        <span>ID: ${esc(p.id)} · ৳${esc(p.price)} ${p.old_price?('· <s>৳'+esc(p.old_price)+'</s>'):''} ${pill}</span></div>
+      <div class="pacts">
+        <button class="btn btn-ghost" style="padding:8px 12px" onclick="editProduct('${esc(p.id)}')">✏️</button>
+        <button class="btn btn-danger" style="padding:8px 12px" onclick="delProduct('${esc(p.id)}')">🗑️</button>
+      </div></div>`;
+  }).join('') || '<div class="mini">কোনো পণ্য নেই। উপরে যোগ করুন।</div>';
+}
+// admin needs hidden products too, so a variant that doesn't filter hidden
+async function grLoadProductsAdmin(){
+  const db = getDB(); if(!db) return [];
+  const { data, error } = await db.from('products').select('*')
+    .order('sort_order',{ascending:true}).order('created_at',{ascending:true});
+  if(error){ showBanner('পণ্য লোড ব্যর্থ: '+error.message,false); return []; }
+  return (data||[]).map(grNormalizeProduct);
+}
+function renderGallery(){
+  $('#pGalleryStrip').innerHTML = galleryUrls.map((u,i)=>
+    `<div class="t"><img src="${esc(u)}"><button onclick="removeGalleryImg(${i})">×</button></div>`).join('');
+}
+window.removeGalleryImg = i=>{ galleryUrls.splice(i,1); renderGallery(); };
+
+$('#pMainFile').onchange = async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const id=$('#pId').value.trim()||('img'+Date.now());
+  showBanner('ছবি আপলোড হচ্ছে...',true);
+  try{
+    mainImageUrl = await grUploadImage(f, id);
+    const pv=$('#pMainPreview'); pv.src=mainImageUrl; pv.style.display='block';
+    showBanner('মূল ছবি আপলোড হয়েছে ✅',true);
+  }catch(err){ showBanner('আপলোড ব্যর্থ: '+err.message,false); }
+};
+$('#pGalleryFile').onchange = async e=>{
+  const files=[...e.target.files]; if(!files.length) return;
+  const id=$('#pId').value.trim()||('img'+Date.now());
+  showBanner('গ্যালারি আপলোড হচ্ছে...',true);
+  try{
+    for(const f of files){ const url=await grUploadImage(f,id); galleryUrls.push(url); }
+    renderGallery(); showBanner('গ্যালারি ছবি যোগ হয়েছে ✅',true);
+  }catch(err){ showBanner('আপলোড ব্যর্থ: '+err.message,false); }
+  e.target.value='';
+};
+
+window.editProduct = id=>{
+  const p = PRODUCTS.find(x=>String(x.id)===String(id)); if(!p) return;
+  editingId = p.id;
+  $('#pEditorTitle').textContent = 'পণ্য এডিট করুন — '+p.name;
+  $('#pId').value=p.id; $('#pName').value=p.name;
+  $('#pCategory').value=(p.categories||[]).join(', ');
+  $('#pPrice').value=p.price||''; $('#pOldPrice').value=p.old_price||'';
+  $('#pAge').value=p.age||''; $('#pLikes').value=p.likes||0;
+  $('#pBattery').value=p.battery||''; $('#pBatterySize').value=p.battery_size||'';
+  $('#pStatus').value=p.status||'active'; $('#pSort').value=p.sort_order||0;
+  $('#pDesc').value=p.description||''; $('#pVideos').value=(p.videos||[]).join('\n');
+  mainImageUrl=p.image_url||''; galleryUrls=(p.images||[]).slice();
+  const pv=$('#pMainPreview'); if(mainImageUrl){ pv.src=mainImageUrl; pv.style.display='block'; } else pv.style.display='none';
+  renderGallery();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+function clearProductForm(){
+  editingId=null; mainImageUrl=''; galleryUrls=[];
+  $('#pEditorTitle').textContent='নতুন পণ্য যোগ করুন';
+  ['pId','pName','pCategory','pPrice','pOldPrice','pAge','pBatterySize','pDesc','pVideos'].forEach(id=>$('#'+id).value='');
+  $('#pLikes').value=0; $('#pSort').value=0; $('#pBattery').value=''; $('#pStatus').value='active';
+  $('#pMainPreview').style.display='none'; renderGallery();
+}
+$('#pClearBtn').onclick = clearProductForm;
+
+$('#pSaveBtn').onclick = async ()=>{
+  const id=$('#pId').value.trim(), name=$('#pName').value.trim();
+  if(!id||!name){ showBanner('ID এবং নাম দিন।',false); return; }
+  const cats=$('#pCategory').value.split(/\s*[,|]\s*/).map(s=>s.trim()).filter(Boolean);
+  const row={
+    id:id, name:name,
+    category:cats[0]||'', categories:cats,
+    price:parseFloat($('#pPrice').value)||0,
+    old_price:parseFloat($('#pOldPrice').value)||0,
+    image_url:mainImageUrl||'',
+    images:galleryUrls.length?galleryUrls:(mainImageUrl?[mainImageUrl]:[]),
+    videos:$('#pVideos').value.split(/\n+/).map(s=>s.trim()).filter(Boolean),
+    description:$('#pDesc').value.trim(),
+    age:$('#pAge').value.trim(),
+    likes:parseInt($('#pLikes').value)||0,
+    battery:$('#pBattery').value,
+    battery_size:$('#pBatterySize').value.trim(),
+    status:$('#pStatus').value,
+    sort_order:parseInt($('#pSort').value)||0
+  };
+  $('#pSaveBtn').disabled=true;
+  try{ await grSaveProduct(row); showBanner('পণ্য সেভ হয়েছে ✅',true); clearProductForm(); await refreshProducts(); }
+  catch(e){ showBanner('সেভ ব্যর্থ: '+e.message,false); }
+  finally{ $('#pSaveBtn').disabled=false; }
+};
+window.delProduct = async id=>{
+  if(!confirm('এই পণ্যটি মুছে ফেলবেন?')) return;
+  try{ await grDeleteProduct(id); showBanner('পণ্য মুছে ফেলা হয়েছে',true); await refreshProducts(); }
+  catch(e){ showBanner('মুছতে ব্যর্থ: '+e.message,false); }
+};
+
+/* ══════════ SETTINGS ══════════ */
+const SETTINGS_SCHEMA = [
+  ['দোকানের তথ্য', [
+    ['store_name','দোকানের নাম','text'],['logo_url','লোগো URL','text'],['favicon_url','ফ্যাভিকন URL','text'],
+    ['phone','ফোন','text'],['whatsapp','WhatsApp (8801...)','text'],
+    ['messenger','Messenger লিংক','text'],['facebook','Facebook লিংক','text'],
+    ['instagram','Instagram','text'],['youtube','YouTube','text'],['email','ইমেইল','text'],
+    ['address','ঠিকানা','text']
+  ]],
+  ['হিরো ও ঘোষণা', [
+    ['announce','ঘোষণা বার','text'],['hero_title','হিরো টাইটেল','text'],['hero_sub','হিরো সাব-টাইটেল','text']
+  ]],
+  ['ডেলিভারি ও মুদ্রা', [
+    ['currency','মুদ্রা চিহ্ন','text'],['delivery_dhaka','ঢাকার ভেতরে চার্জ','number'],['delivery_outside','ঢাকার বাইরে চার্জ','number']
+  ]],
+  ['ব্যানার (৫টি)', [
+    ['banner1','ব্যানার ১','text'],['banner2','ব্যানার ২','text'],['banner3','ব্যানার ৩','text'],
+    ['banner4','ব্যানার ৪','text'],['banner5','ব্যানার ৫','text']
+  ]],
+  ['প্রথম-ভিজিট পপআপ', [
+    ['popup_image','পপআপ ছবি URL','text'],['popup_title','পপআপ টাইটেল','text'],
+    ['popup_button','পপআপ বাটন লেখা','text'],['popup_link','পপআপ লিংক','text']
+  ]],
+  ['ট্রাস্ট ব্যাজ (৪টি)', [
+    ['trust1','ট্রাস্ট ১','text'],['trust2','ট্রাস্ট ২','text'],['trust3','ট্রাস্ট ৩','text'],['trust4','ট্রাস্ট ৪','text']
+  ]],
+  ['আমাদের সম্পর্কে ও ফুটার', [
+    ['owner_quote','মালিকের বাণী','textarea'],['owner_name','মালিকের নাম','text'],['map_link','Google Maps লিংক','text'],
+    ['corporate_sales','কর্পোরেট সেলস','text'],['retail_sales','রিটেইল সেলস','text'],
+    ['footer_tagline','ফুটার ট্যাগলাইন','text'],['footer_color','ফুটার রঙ (#4F2A37)','text']
+  ]],
+  ['ক্যাটেগরি ও ডিসপ্লে', [
+    ['categories','ক্যাটেগরি তালিকা (কমা দিয়ে ক্রমসহ)','textarea'],
+    ['discount_display','ছাড় দেখানো (both/percent/amount)','select:both,percent,amount'],
+    ['order_message','অর্ডার সফল মেসেজ','text'],['review_message','রিভিউ ধন্যবাদ মেসেজ','text']
+  ]],
+  ['ব্যাটারি', [
+    ['battery_default','ডিফল্ট ব্যাটারি নোট','text'],['battery_product_id','ব্যাটারি প্রোডাক্ট ID','text'],
+    ['battery_product_id_aa','AA প্রোডাক্ট ID','text'],['battery_product_id_aaa','AAA প্রোডাক্ট ID','text']
+  ]],
+  ['অনলাইন পেমেন্ট', [
+    ['online_payment','অনলাইন পেমেন্ট','select:off,on'],
+    ['payment_type','পেমেন্ট ধরন','select:send_money,payment'],
+    ['bkash_number','bKash নম্বর','text'],['nagad_number','Nagad নম্বর','text'],['rocket_number','Rocket নম্বর','text'],
+    ['payment_note','পেমেন্ট নোট','text']
+  ]],
+  ['ফিচার চালু/বন্ধ', [
+    ['order_tracking','অর্ডার ট্র্যাকিং','select:on,off'],
+    ['order_whatsapp','অর্ডার WhatsApp-এও','select:on,off']
+  ]]
+];
+function buildSettingsForm(){
+  let html='';
+  SETTINGS_SCHEMA.forEach(group=>{
+    html += `<div style="margin-bottom:8px"><b style="color:var(--accent-deep)">${group[0]}</b></div><div class="grid2" style="margin-bottom:20px">`;
+    group[1].forEach(f=>{
+      const key=f[0], label=f[1], type=f[2];
+      const val = SETTINGS[key]!=null ? SETTINGS[key] : '';
+      let input;
+      if(type==='textarea'){
+        input = `<textarea id="set-${key}">${esc(val)}</textarea>`;
+      } else if(type && type.indexOf('select:')===0){
+        const opts = type.slice(7).split(',');
+        input = `<select id="set-${key}">`+opts.map(o=>`<option value="${o}" ${String(val)===o?'selected':''}>${o}</option>`).join('')+`</select>`;
+      } else {
+        input = `<input type="${type==='number'?'number':'text'}" id="set-${key}" value="${esc(val)}">`;
+      }
+      html += `<div class="field"><label>${label} <span style="color:var(--line)">· ${key}</span></label>${input}</div>`;
+    });
+    html += `</div>`;
+  });
+  $('#settingsForm').innerHTML = html;
+}
+$('#settingsSaveBtn').onclick = async ()=>{
+  const out={};
+  SETTINGS_SCHEMA.forEach(g=>g[1].forEach(f=>{ const el=$('#set-'+f[0]); if(el) out[f[0]]=el.value; }));
+  $('#settingsSaveBtn').disabled=true;
+  try{ await grSaveSettingsBulk(out); SETTINGS={...SETTINGS,...out}; buildCatList(); showBanner('সেটিংস সেভ হয়েছে ✅',true); }
+  catch(e){ showBanner('সেভ ব্যর্থ: '+e.message,false); }
+  finally{ $('#settingsSaveBtn').disabled=false; }
+};
+
+/* ══════════ COUPONS ══════════ */
+async function refreshCoupons(){
+  const db=getDB(); const {data}=await db.from('coupons').select('*').order('code');
+  $('#cList').innerHTML = (data||[]).map(c=>`<tr>
+    <td><b>${esc(c.code)}</b></td><td>${esc(c.type)}</td><td>${esc(c.value)}</td><td>${esc(c.min)}</td>
+    <td style="text-align:right;white-space:nowrap">
+      <button class="btn btn-ghost" style="padding:6px 10px" onclick="editCoupon('${esc(c.code)}',${JSON.stringify(c.type)},${c.value},${c.min})">✏️</button>
+      <button class="btn btn-danger" style="padding:6px 10px" onclick="delCoupon('${esc(c.code)}')">🗑️</button>
+    </td></tr>`).join('') || '<tr><td colspan="5" class="mini">কোনো কুপন নেই।</td></tr>';
+}
+window.editCoupon=(code,type,value,min)=>{ $('#cCode').value=code; $('#cType').value=type; $('#cValue').value=value; $('#cMin').value=min; window.scrollTo({top:0,behavior:'smooth'}); };
+$('#cClearBtn').onclick=()=>{ $('#cCode').value=''; $('#cValue').value=''; $('#cMin').value=''; $('#cType').value='percent'; };
+$('#cSaveBtn').onclick=async ()=>{
+  const code=$('#cCode').value.trim().toUpperCase(); if(!code){ showBanner('কুপন কোড দিন।',false); return; }
+  const row={code,type:$('#cType').value,value:parseFloat($('#cValue').value)||0,min:parseFloat($('#cMin').value)||0,active:true};
+  try{ await grSaveCoupon(row); showBanner('কুপন সেভ হয়েছে ✅',true); $('#cClearBtn').click(); await refreshCoupons(); }
+  catch(e){ showBanner('সেভ ব্যর্থ: '+e.message,false); }
+};
+window.delCoupon=async code=>{ if(!confirm(code+' কুপনটি মুছবেন?')) return; try{ await grDeleteCoupon(code); await refreshCoupons(); showBanner('মুছে ফেলা হয়েছে',true); }catch(e){ showBanner(e.message,false); } };
+
+/* ══════════ REVIEWS ══════════ */
+async function refreshReviews(){
+  const list = await grAdminListReviews();
+  const pend = list.filter(r=>r.status==='pending').length;
+  $('#rvCount').textContent = pend ? ('· '+pend+'টি অপেক্ষমাণ') : '';
+  $('#rvList').innerHTML = list.map(r=>`<tr>
+    <td><b>${esc(r.customer_name)}</b><br><span class="mini">${esc(r.profession||'')} ${r.product_name?('· '+esc(r.product_name)):''}</span></td>
+    <td>${'⭐'.repeat(r.rating||0)}</td>
+    <td style="max-width:260px">${esc(r.review_text)}</td>
+    <td><span class="tag ${esc(r.status)}">${esc(r.status)}</span></td>
+    <td style="text-align:right;white-space:nowrap">
+      ${r.status!=='approved'?`<button class="btn btn-ghost" style="padding:6px 10px" onclick="rvStatus(${r.id},'approved')">✅</button>`:''}
+      ${r.status!=='hidden'?`<button class="btn btn-ghost" style="padding:6px 10px" onclick="rvStatus(${r.id},'hidden')">🙈</button>`:''}
+      <button class="btn btn-danger" style="padding:6px 10px" onclick="rvDel(${r.id})">🗑️</button>
+    </td></tr>`).join('') || '<tr><td colspan="5" class="mini">কোনো রিভিউ নেই।</td></tr>';
+}
+window.rvStatus=async (id,st)=>{ try{ await grSetReviewStatus(id,st); await refreshReviews(); showBanner('রিভিউ '+st,true); }catch(e){ showBanner(e.message,false); } };
+window.rvDel=async id=>{ if(!confirm('রিভিউটি মুছবেন?')) return; try{ await grDeleteReview(id); await refreshReviews(); }catch(e){ showBanner(e.message,false); } };
+
+/* ══════════ ORDERS ══════════ */
+async function refreshOrders(){
+  const list = await grAdminListOrders(200);
+  $('#oList').innerHTML = list.map(o=>`<tr>
+    <td><b>${esc(o.order_code)}</b><br><span class="mini">${esc((o.created_at||'').slice(0,16).replace('T',' '))}</span></td>
+    <td>${esc(o.customer_name)}<br><span class="mini">${esc(o.phone)}</span></td>
+    <td style="max-width:220px"><span class="mini">${esc(o.product_list)}</span></td>
+    <td>৳${esc(o.grand_total)}</td>
+    <td>
+      <select onchange="ordStatus(${o.id}, this.value)" style="padding:6px 8px;font-size:13px">
+        ${['Pending','Confirmed','Shipped','Delivered','Cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </td></tr>`).join('') || '<tr><td colspan="5" class="mini">কোনো অর্ডার নেই।</td></tr>';
+}
+window.ordStatus=async (id,st)=>{ try{ await grSetOrderStatus(id,st); showBanner('স্ট্যাটাস আপডেট',true); }catch(e){ showBanner(e.message,false); } };
+
+/* ══════════ BOOT ══════════ */
+checkSession();
+</script>
+</body>
+</html>
