@@ -239,11 +239,7 @@ th{color:var(--muted);font-size:12px;font-weight:600}
 
   <!-- ─── ORDERS ─── -->
   <div class="panel" id="panel-orders">
-    <div class="card">
-      <h3>সাম্প্রতিক অর্ডার</h3>
-      <table><thead><tr><th>কোড</th><th>নাম / ফোন</th><th>পণ্য</th><th>মোট</th><th>স্ট্যাটাস</th></tr></thead>
-      <tbody id="oList"></tbody></table>
-    </div>
+    <div id="ordersRoot"></div>
   </div>
 
 </div>
@@ -251,6 +247,7 @@ th{color:var(--muted);font-size:12px;font-weight:600}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="data.js"></script>
+<script src="admin-orders.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -551,20 +548,6 @@ window.rvStatus=async (id,st)=>{ try{ await grSetReviewStatus(id,st); await refr
 window.rvDel=async id=>{ if(!confirm('রিভিউটি মুছবেন?')) return; try{ await grDeleteReview(id); await refreshReviews(); }catch(e){ showBanner(e.message,false); } };
 
 /* ══════════ ORDERS ══════════ */
-async function refreshOrders(){
-  const list = await grAdminListOrders(200);
-  $('#oList').innerHTML = list.map(o=>`<tr>
-    <td><b>${esc(o.order_code)}</b><br><span class="mini">${esc((o.created_at||'').slice(0,16).replace('T',' '))}</span></td>
-    <td>${esc(o.customer_name)}<br><span class="mini">${esc(o.phone)}</span></td>
-    <td style="max-width:220px"><span class="mini">${esc(o.product_list)}</span></td>
-    <td>৳${esc(o.grand_total)}</td>
-    <td>
-      <select onchange="ordStatus(${o.id}, this.value)" style="padding:6px 8px;font-size:13px">
-        ${['Pending','Confirmed','Shipped','Delivered','Cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
-      </select>
-    </td></tr>`).join('') || '<tr><td colspan="5" class="mini">কোনো অর্ডার নেই।</td></tr>';
-}
-window.ordStatus=async (id,st)=>{ try{ await grSetOrderStatus(id,st); showBanner('স্ট্যাটাস আপডেট',true); }catch(e){ showBanner(e.message,false); } };
 
 /* ══════════ BOOT ══════════ */
 checkSession();

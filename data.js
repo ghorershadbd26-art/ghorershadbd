@@ -324,3 +324,94 @@ async function grDeleteReview(id) {
   const { error } = await db.from('reviews').delete().eq('id', id);
   if (error) throw error;
 }
+
+
+/* ============================================================
+   ধাপ ১ — অর্ডার প্যানেলের জন্য নতুন ফাংশন
+   (উপরের কোনো কিছু বদলানো হয়নি, শুধু নিচে যোগ করা হয়েছে)
+   ============================================================ */
+
+
+/* ── অর্ডারের স্ট্যাটাস তালিকা (এক জায়গায় রাখা) ──
+   নাম বদলালে index.html-এর trkCls() যেন রঙ ঠিক দেখায়, সেভাবে বাছা:
+   confirm/process → হলুদ | ship/courier/way → নীল
+   deliver → সবুজ | cancel/return → লাল                      */
+const GR_ORDER_STATUSES = [
+  'Pending', 'Confirmed', 'Processing', 'Shipped',
+  'In Courier', 'Delivered', 'Cancelled', 'Returned'
+];
+
+const GR_PAYMENT_STATUSES = ['', 'Pending', 'Verified', 'Rejected'];
+
+
+/* ── ফিল্টার + সার্চ সহ অর্ডার তালিকা (admin) ──
+   opts = { status, search, limit, offset }
+   status খালি বা 'all' হলে সব।
+   search: অর্ডার কোড / ফোন / নাম — যেকোনোটার অংশ।              */
+async function grAdminOrders(opts) {
+  const o = opts || {};
+  const db = getDB(); if (!db) return [];
+  let q = db.from('orders').select('*');
+
+  if (o.status && o.status !== 'all') q = q.eq('status', o.status);
+
+  const s = (o.search || '').trim();
+  if (s) {
+    const like = '%' + s.replace(/[%,]/g, '') + '%';
+    q = q.or('order_code.ilike.' + like +
+             ',phone.ilike.'      + like +
+             ',customer_name.ilike.' + like);
+  }
+
+  const limit  = o.limit  || 100;
+  const offset = o.offset || 0;
+  q = q.order('created_at', { ascending: false }).range(offset, offset + limit - 1);
+
+  const { data, error } = await q;
+  if (error) { console.error('grAdminOrders:', error.message); return []; }
+  return data || [];
+}
+
+
+/* ── প্রতিটি স্ট্যাটাসে কয়টা অর্ডার (ট্যাবের পাশে সংখ্যা দেখাতে) ──
+   শুধু status কলামটা আনে, তাই হালকা।                            */
+async function grOrderCounts() {
+  const db = getDB(); if (!db) return {};
+  const { data, error } = await db.from('orders').select('status');
+  if (error) { console.error('grOrderCounts:', error.message); return {}; }
+  const c = { all: 0 };
+  (data || []).forEach(r => {
+    const st = r.status || 'Pending';
+    c.all++; c[st] = (c[st] || 0) + 1;
+  });
+  return c;
+}
+
+
+/* ── শুধু পেমেন্ট স্ট্যাটাস বদলানো (Verified / Rejected) ── */
+async function grSetPaymentStatus(id, paymentStatus) {
+  const db = getDB(); if (!db) throw new Error('DB not ready');
+  const { error } = await db.from('orders')
+    .update({ payment_status: paymentStatus }).eq('id', id);
+  if (error) throw error;
+}
+
+
+/* ── অ্যাডমিনের নোট সেভ (ঐচ্ছিক — কলাম না থাকলে চুপচাপ ব্যর্থ হবে) ──
+   কলাম যোগ করতে চাইলে SQL Editor-এ একবার চালান:
+   alter table public.orders add column if not exists admin_note text;   */
+async function grSetOrderNote(id, note) {
+  const db = getDB(); if (!db) throw new Error('DB not ready');
+  const { error } = await db.from('orders')
+    .update({ admin_note: note || '' }).eq('id', id);
+  if (error) throw error;
+}
+
+
+/* ── একটি অর্ডারের পূর্ণ তথ্য ── */
+async function grGetOrder(id) {
+  const db = getDB(); if (!db) return null;
+  const { data, error } = await db.from('orders').select('*').eq('id', id).single();
+  if (error) { console.error('grGetOrder:', error.message); return null; }
+  return data;
+}
